@@ -17,16 +17,19 @@
             android:id="@+id/msgUserNameId"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="you"
             android:textColor="@color/black"
             android:textSize="10sp"
             android:textStyle="bold">
 
         </TextView>
+
         <TextView
             android:id="@+id/chatmessageId"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
+            android:text="Hello!"
             android:textColor="@color/purple_500"
             android:textSize="18sp"
             android:textStyle="bold"></TextView>
