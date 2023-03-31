@@ -44,10 +44,11 @@
             android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
+            android:layout_marginStart="10dp"
             android:text="TextView"
+            app:layout_constraintBottom_toBottomOf="@+id/circleImageView"
             app:layout_constraintStart_toEndOf="@+id/circleImageView"
-            tools:layout_editor_absoluteY="29dp" />
+            app:layout_constraintTop_toTopOf="@+id/circleImageView" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
