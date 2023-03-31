@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">NU_MAD_SP2023_Final_Project_12</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
