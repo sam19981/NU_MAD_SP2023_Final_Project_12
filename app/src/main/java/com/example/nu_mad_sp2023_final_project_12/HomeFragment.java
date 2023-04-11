@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 import com.example.nu_mad_sp2023_final_project_12.Adapter.ViewPagerAdapter;
 import com.google.android.material.tabs.TabLayout;
@@ -39,7 +40,7 @@ public class HomeFragment extends Fragment {
 
     private ViewPagerAdapter viewPagerAdapter;
 
-    private Button pBtn;
+    private ImageButton pBtn;
 
     public HomeFragment() {
         // Required empty public constructor
