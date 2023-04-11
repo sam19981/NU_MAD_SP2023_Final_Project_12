@@ -43,13 +43,14 @@ public class LoginFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    TextInputEditText etLoginEmail;
-    TextInputEditText etLoginPassword;
-    TextView tvRegisterHere;
-    Button btnLogin;
-    FirebaseAuth mAuth;
-    FirebaseFirestore dataBase;
-    FirebaseUser mUser;
+    private TextInputEditText etLoginEmail;
+    private TextInputEditText etLoginPassword;
+    private TextView tvRegisterHere;
+    private Button btnLogin;
+    private FirebaseAuth mAuth;
+    private FirebaseFirestore dataBase;
+    private FirebaseUser mUser;
+    private MainActivity parentActivity;
 
     public LoginFragment() {
         // Required empty public constructor
@@ -83,6 +84,7 @@ public class LoginFragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         dataBase = FirebaseFirestore.getInstance();
         mUser = mAuth.getCurrentUser();
+        parentActivity =(MainActivity)getActivity();
 
     }
 
@@ -104,7 +106,7 @@ public class LoginFragment extends Fragment {
             loginUser();
         });
         tvRegisterHere.setOnClickListener(view1 ->{
-            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.rootLayoutId,new SignUpFragment(),"LoginTosignUp").addToBackStack(null).commit();
+            parentActivity.replaceFragment(new SignUpFragment(),"LoginTosignUp");
         });
 
         return view;
@@ -136,7 +138,7 @@ public class LoginFragment extends Fragment {
                                     DocumentSnapshot documentSnapshot = task.getResult();
                                     UserData  currentUser = documentSnapshot.toObject(UserData.class);
                                     MainActivity.setCurrentBio(currentUser);
-                                    getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.rootLayoutId,new HomeFragment(),"logintohome").addToBackStack(null).commit();
+                                    parentActivity.replaceFragment(new HomeFragment(),"logintohome");
                                 }
                             }
                         });
