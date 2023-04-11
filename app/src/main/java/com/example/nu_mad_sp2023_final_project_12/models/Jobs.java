@@ -23,6 +23,10 @@ public class Jobs {
         this.time = time;
     }
 
+    public Jobs() {
+
+    }
+
     public String getName() {
         return name;
     }
