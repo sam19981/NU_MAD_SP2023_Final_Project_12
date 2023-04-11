@@ -3,11 +3,21 @@ package com.example.nu_mad_sp2023_final_project_12;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager2.widget.ViewPager2;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
+
+import com.example.nu_mad_sp2023_final_project_12.Adapter.ViewPagerAdapter;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -25,7 +35,12 @@ public class HomeFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    private Button pBtn;
+    private TabLayout tabLayout;
+    private ViewPager2 viewPager;
+
+    private ViewPagerAdapter viewPagerAdapter;
+
+    private ImageButton pBtn;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -62,8 +77,29 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.homepage, container, false);
-
+        View view = inflater.inflate(R.layout.home, container, false);
+        List<Fragment> fragments = new ArrayList<>();
+        fragments.add(new Fragment());
+        fragments.add(new Fragment());
+        fragments.add(new Fragment());
+        viewPager = (ViewPager2) view.findViewById(R.id.viewPager);
+        viewPagerAdapter = new ViewPagerAdapter(getActivity().getSupportFragmentManager(),getLifecycle(), fragments);
+        viewPager.setAdapter(viewPagerAdapter);
+        tabLayout = (TabLayout) view.findViewById(R.id.sliding_tabs);
+        new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
+            // Set the tab title based on the position of the current page
+            switch (position) {
+                case 0:
+                    tab.setText("Page 1");
+                    break;
+                case 1:
+                    tab.setText("Page 2");
+                    break;
+                case 2:
+                    tab.setText("Page 3");
+                    break;
+            }
+        }).attach();
         pBtn = view.findViewById(R.id.postbtn);
         pBtn.setOnClickListener(new View.OnClickListener() {
             @Override
