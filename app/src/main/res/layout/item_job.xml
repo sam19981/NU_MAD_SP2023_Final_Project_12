@@ -19,12 +19,12 @@
 
         <ImageView
             android:id="@+id/NnewsImg"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:layout_weight="1"
             android:scaleType="centerInside"
             android:src="@drawable/awesome"
-            app:srcCompat="@drawable/select_avatar">
+            app:srcCompat="@drawable/dog">
 
         </ImageView>
 
@@ -39,7 +39,7 @@
                 android:id="@+id/job_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Shyam"
+                android:text="walking a dog in the park"
                 android:textColor="@color/black"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -55,7 +55,7 @@
                 android:id="@+id/job_location"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Walk a dog - Completed"
+                android:text="roxbury, MA"
                 android:textColor="@color/purple_500"
                 android:textSize="14sp" />
 
