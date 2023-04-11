@@ -10,37 +10,52 @@
         android:layout_height="match_parent">
 
         <!--  back  -->
+
         <ImageButton
-            app:srcCompat="@drawable/ic_menu"
-            android:layout_alignParentLeft="true"
+            android:id="@+id/logout"
             android:layout_width="wrap_content"
-            android:layout_marginLeft="34dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
+            android:layout_marginRight="64dp"
             android:background="@android:color/transparent"
-            android:layout_height="wrap_content" />
+            app:srcCompat="@android:drawable/ic_lock_power_off" />
+
+        <ImageButton
+            android:id="@+id/logoutBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="34dp"
+            android:background="@android:color/transparent"
+            app:srcCompat="@drawable/ic_menu" />
 
 
         <!--  Title Toolbar  -->
-        <TextView
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:layout_width="wrap_content"
-            android:text="My Profile"
-            android:textSize="18dp"
-            android:textStyle="bold"
-            android:textColor="@color/color_third_text"
-            android:layout_height="wrap_content" />
 
 
         <!-- Check Done   -->
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="31dp"
+            android:layout_toStartOf="@+id/postbtn"
+            android:text="My Profile"
+            android:textColor="@color/color_third_text"
+            android:textSize="18dp"
+            android:textStyle="bold" />
+
         <ImageButton
             android:id="@+id/postbtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="34dp"
+            android:layout_marginRight="145dp"
             android:background="@android:color/transparent"
-            app:srcCompat="@drawable/ic_clear_black_24dp" />
+            app:srcCompat="@android:drawable/ic_input_add" />
     </RelativeLayout>
 </RelativeLayout>

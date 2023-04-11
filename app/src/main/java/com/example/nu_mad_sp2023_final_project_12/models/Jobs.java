@@ -1,6 +1,6 @@
 package com.example.nu_mad_sp2023_final_project_12.models;
 
-public class UserJob {
+public class Jobs {
     private String name;
     private String description;
     private String postedBy;
@@ -11,7 +11,7 @@ public class UserJob {
     private double wage;
     private String time;
 
-    public UserJob(String name, String description, String postedBy, String taken, String imgUrl, String status, String location, double wage, String time) {
+    public Jobs(String name, String description, String postedBy, String taken, String imgUrl, String status, String location, double wage, String time) {
         this.name = name;
         this.description = description;
         this.postedBy = postedBy;

@@ -6,18 +6,25 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.nu_mad_sp2023_final_project_12.Adapter.ViewPagerAdapter;
+import com.example.nu_mad_sp2023_final_project_12.models.UserData;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -41,6 +48,12 @@ public class HomeFragment extends Fragment {
     private ViewPagerAdapter viewPagerAdapter;
 
     private ImageButton pBtn;
+
+    private TextView name;
+    private CircleImageView profilepic;
+    private ImageView changeProfilePic;
+    private UserData currentUserBio;
+
 
     public HomeFragment() {
         // Required empty public constructor
@@ -71,6 +84,7 @@ public class HomeFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        currentUserBio = MainActivity.getCurrentBio();
     }
 
     @Override
@@ -78,6 +92,14 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.home, container, false);
+
+        name = view.findViewById(R.id.id_fullName_TextView);
+        profilepic = view.findViewById(R.id.profilePicId);
+        changeProfilePic = view.findViewById(R.id.changeProfilePicId);
+        name.setText(currentUserBio.getName());
+//        Glide.with(getContext()).load(currentUserBio.getProfilepicture()).into(profilepic);
+
+
         List<Fragment> fragments = new ArrayList<>();
         fragments.add(new Fragment());
         fragments.add(new Fragment());
@@ -90,13 +112,13 @@ public class HomeFragment extends Fragment {
             // Set the tab title based on the position of the current page
             switch (position) {
                 case 0:
-                    tab.setText("Page 1");
+                    tab.setText("Jobs");
                     break;
                 case 1:
-                    tab.setText("Page 2");
+                    tab.setText("History");
                     break;
                 case 2:
-                    tab.setText("Page 3");
+                    tab.setText("Chats");
                     break;
             }
         }).attach();
