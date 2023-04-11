@@ -2,6 +2,7 @@ package com.example.nu_mad_sp2023_final_project_12;
 
 import android.os.Bundle;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -23,6 +24,7 @@ public class ChatFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private MainActivity parentActivity;
 
     public ChatFragment() {
         // Required empty public constructor
@@ -53,6 +55,7 @@ public class ChatFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        parentActivity = (MainActivity)getActivity();
     }
 
     @Override

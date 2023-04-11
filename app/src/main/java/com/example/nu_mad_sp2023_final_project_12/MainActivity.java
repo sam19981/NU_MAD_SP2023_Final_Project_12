@@ -3,6 +3,8 @@ package com.example.nu_mad_sp2023_final_project_12;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -38,8 +40,6 @@ public class MainActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         currentUser = mAuth.getCurrentUser();
-//      getSupportFragmentManager().beginTransaction().replace(R.id.rootLayoutId, new LoginFragment(), "maintologin").commit();
-       //getSupportFragmentManager().beginTransaction().replace(R.id.fragmentLayoutId,new HomeFragment(),"hello").commit();
     }
 
     protected void onStart() {
@@ -64,19 +64,22 @@ public class MainActivity extends AppCompatActivity {
                         UserData  User = documentSnapshot.toObject(UserData.class);
                         MainActivity.setCurrentBio(User);
                         Log.d("data",currentBio.toString());
-                        getSupportFragmentManager().beginTransaction().replace(R.id.rootLayoutId,new HomeFragment(),"logintohome").addToBackStack(null).commit();
+                        replaceFragment(new HomeFragment(),"logintohome");
                     }
                 }
             });
         }
         else {
-            getSupportFragmentManager().beginTransaction().replace(R.id.rootLayoutId,new LoginFragment(),"ActivityToLogin").addToBackStack(null).commit();
+            replaceFragment(new LoginFragment(),"ActivityToLogin");
         }
     }
 
-    public void transition(Fragment fragTotransition,String Tag)
-    {
-        getSupportFragmentManager().beginTransaction().replace(R.id.rootLayoutId,fragTotransition,Tag).commit();
+    public void replaceFragment(Fragment fragment,String tag) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.rootLayoutId, fragment,tag);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
     }
 
 }

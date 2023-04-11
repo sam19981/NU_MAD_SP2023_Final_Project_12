@@ -112,7 +112,6 @@ public class PostJob extends Fragment {
 
                             }
                         });
-
             }
         });
 

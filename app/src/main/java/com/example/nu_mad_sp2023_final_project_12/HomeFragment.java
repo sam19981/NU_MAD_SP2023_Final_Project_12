@@ -2,6 +2,7 @@ package com.example.nu_mad_sp2023_final_project_12;
 
 import android.os.Bundle;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
@@ -20,6 +21,8 @@ import com.example.nu_mad_sp2023_final_project_12.Adapter.ViewPagerAdapter;
 import com.example.nu_mad_sp2023_final_project_12.models.UserData;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,18 +44,17 @@ public class HomeFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
     private TabLayout tabLayout;
     private ViewPager2 viewPager;
-
     private ViewPagerAdapter viewPagerAdapter;
-
     private ImageButton pBtn;
-
     private TextView name;
     private CircleImageView profilepic;
     private ImageView changeProfilePic;
     private UserData currentUserBio;
+    private MainActivity parentActivity;
+    private ImageView logOut;
+    private FirebaseAuth mAuth;
 
 
     public HomeFragment() {
@@ -84,7 +86,9 @@ public class HomeFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        mAuth = FirebaseAuth.getInstance();
         currentUserBio = MainActivity.getCurrentBio();
+        parentActivity = (MainActivity)getActivity();
     }
 
     @Override
@@ -96,16 +100,26 @@ public class HomeFragment extends Fragment {
         name = view.findViewById(R.id.id_fullName_TextView);
         profilepic = view.findViewById(R.id.profilePicId);
         changeProfilePic = view.findViewById(R.id.changeProfilePicId);
+        logOut = view.findViewById(R.id.logout);
         name.setText(currentUserBio.getName());
 //        Glide.with(getContext()).load(currentUserBio.getProfilepicture()).into(profilepic);
 
+
+        logOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mAuth.signOut();
+                MainActivity.setCurrentBio(null);
+                parentActivity.replaceFragment(new LoginFragment(),"HomeToLogin");
+            }
+        });
 
         List<Fragment> fragments = new ArrayList<>();
         fragments.add(new Fragment());
         fragments.add(new Fragment());
         fragments.add(new Fragment());
         viewPager = (ViewPager2) view.findViewById(R.id.viewPager);
-        viewPagerAdapter = new ViewPagerAdapter(getActivity().getSupportFragmentManager(),getLifecycle(), fragments);
+        viewPagerAdapter = new ViewPagerAdapter(parentActivity.getSupportFragmentManager(),getLifecycle(), fragments);
         viewPager.setAdapter(viewPagerAdapter);
         tabLayout = (TabLayout) view.findViewById(R.id.sliding_tabs);
         new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
@@ -126,7 +140,7 @@ public class HomeFragment extends Fragment {
         pBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.rootLayoutId, new PostJob(),"hometopost").addToBackStack(null).commit();
+                parentActivity.replaceFragment(new PostJob(),"hometopost");
             }
         });
 
