@@ -1,5 +1,8 @@
 plugins {
     id 'com.android.application'
+    id 'com.google.gms.google-services'
+
+
 }
 
 android {
@@ -8,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.nu_mad_sp2023_final_project_12"
-        minSdk 29
+        minSdk 30
         targetSdk 33
         versionCode 1
         versionName "1.0"
@@ -38,4 +41,14 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
     implementation 'de.hdodenhof:circleimageview:3.1.0'
+
+    implementation platform('com.google.firebase:firebase-bom:31.3.0')
+    implementation 'com.google.firebase:firebase-analytics'
+    implementation 'com.google.firebase:firebase-auth'
+    implementation 'com.google.firebase:firebase-firestore'
+    implementation 'com.google.firebase:firebase-storage'
+
+    implementation 'com.github.bumptech.glide:glide:4.12.0'
+    // Glide v4 uses this new annotation processor -- see https://bumptech.github.io/glide/doc/generatedapi.html
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
 }

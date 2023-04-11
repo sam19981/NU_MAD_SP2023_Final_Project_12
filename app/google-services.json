@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "691716078729",
+    "project_id": "myproject-dac08",
+    "storage_bucket": "myproject-dac08.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:691716078729:android:5695348b62426c691f9a58",
+        "android_client_info": {
+          "package_name": "com.example.nu_mad_sp2023_final_project_12"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "691716078729-9p7ctq05tire70aq51tcqrt3rdkoup8q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDdMxyCFYPHPnopgumK1ezEHkeHEE9q8xs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "691716078729-9p7ctq05tire70aq51tcqrt3rdkoup8q.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
