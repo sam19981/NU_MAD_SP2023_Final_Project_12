@@ -12,7 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.nu_mad_sp2023_final_project_12.models.UserJob;
+import com.example.nu_mad_sp2023_final_project_12.models.Jobs;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -96,10 +96,10 @@ public class PostJob extends Fragment {
         jobPost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                UserJob userJob = new UserJob(job_name.getText().toString(), job_desc.getText().toString(), mUser.getEmail(), null, null, "available", null, Double.parseDouble(job_pay.getText().toString()),job_time.getText().toString());
+                Jobs jobs = new Jobs(job_name.getText().toString(), job_desc.getText().toString(), mUser.getEmail(), null, null, "available", null, Double.parseDouble(job_pay.getText().toString()),job_time.getText().toString());
 
 
-                db.collection("jobs").document().set(userJob).addOnSuccessListener(new OnSuccessListener<Void>() {
+                db.collection("jobs").document().set(jobs).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void unused) {
                                 Toast.makeText(getContext(), "Job posted successfully", Toast.LENGTH_SHORT).show();

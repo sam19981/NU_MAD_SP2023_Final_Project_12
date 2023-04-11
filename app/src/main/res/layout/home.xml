@@ -70,15 +70,16 @@
                         <!--  Change Image -->
 
                         <ImageView
+                            android:id="@+id/changeProfilePicId"
                             android:layout_width="40dp"
                             android:layout_height="40dp"
                             android:layout_alignParentEnd="true"
                             android:layout_alignParentRight="true"
                             android:layout_centerVertical="true"
                             android:layout_marginEnd="10dp"
-                            android:contentDescription="For more ui/ux visit www.materialuiux.com"
                             android:layout_marginRight="10dp"
-                            android:background="@drawable/ic_add" />
+                            android:background="@drawable/ic_add"
+                            android:contentDescription="For more ui/ux visit www.materialuiux.com" />
 
                     </RelativeLayout>
 

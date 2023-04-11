@@ -70,7 +70,7 @@ public class SignUpFragment extends Fragment implements DisplayTakenPhoto {
 
 
     // TODO: Rename and change types of parameters
-    private Uri URI;
+    private Uri URI= Uri.parse("");
 
     private static final int PERMISSIONS_CODE = 0x100;
 
@@ -202,12 +202,13 @@ public class SignUpFragment extends Fragment implements DisplayTakenPhoto {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if (task.isSuccessful()){
-                        UserData newUser = new UserData(userName,email,null);
+                        UserData newUser = new UserData(userName,email,URI.toString());
                         DocumentReference docRef = db.collection("users").document(newUser.getEmail());
                         docRef.set(newUser).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void unused) {
                                 Toast.makeText(getContext(), "User registered successfully", Toast.LENGTH_SHORT).show();
+                                MainActivity.setCurrentBio(newUser);
                                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.rootLayoutId,new HomeFragment(),"signUptoHome").addToBackStack(null).commit();
                             }
                         }).addOnFailureListener(new OnFailureListener() {

@@ -16,11 +16,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 //import com.example.inclass_sankara_narayanan_002787959.R;
+import com.bumptech.glide.Glide;
+import com.example.nu_mad_sp2023_final_project_12.models.UserData;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 /**
@@ -45,6 +49,7 @@ public class LoginFragment extends Fragment {
     Button btnLogin;
     FirebaseAuth mAuth;
     FirebaseFirestore dataBase;
+    FirebaseUser mUser;
 
     public LoginFragment() {
         // Required empty public constructor
@@ -77,7 +82,7 @@ public class LoginFragment extends Fragment {
         }
         mAuth = FirebaseAuth.getInstance();
         dataBase = FirebaseFirestore.getInstance();
-
+        mUser = mAuth.getCurrentUser();
 
     }
 
@@ -122,7 +127,20 @@ public class LoginFragment extends Fragment {
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if (task.isSuccessful()){
                         Toast.makeText(getContext(), "User logged in successfully", Toast.LENGTH_SHORT).show();
-                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.rootLayoutId,new HomeFragment(),"logintohome").addToBackStack(null).commit();
+                        mUser = mAuth.getCurrentUser();
+                        dataBase.collection("users").document(mUser.getEmail()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                if(task.isSuccessful())
+                                {
+                                    DocumentSnapshot documentSnapshot = task.getResult();
+                                    UserData  currentUser = documentSnapshot.toObject(UserData.class);
+                                    MainActivity.setCurrentBio(currentUser);
+                                    getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.rootLayoutId,new HomeFragment(),"logintohome").addToBackStack(null).commit();
+                                }
+                            }
+                        });
+
                     }else{
                         Toast.makeText(getContext(), "Log in Error: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
