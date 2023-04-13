@@ -16,33 +16,36 @@ import com.example.nu_mad_sp2023_final_project_12.models.Jobs;
 
 import java.util.List;
 
-public class jobListAdapter extends RecyclerView.Adapter<jobListAdapter.ViewHolder> {
+public class jobHistoryAdapter extends RecyclerView.Adapter<jobHistoryAdapter.ViewHolder> {
 
     private List<Jobs> jobs;
 
     private Context context;
 
-    public jobListAdapter(List<Jobs> jobs, Context context) {
+    public jobHistoryAdapter(List<Jobs> jobs, Context context) {
         this.jobs = jobs;
         this.context = context;
     }
 
+    @NonNull
+    @Override
+    public jobHistoryAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_history,parent, false);
+        return new jobHistoryAdapter.ViewHolder(view);
+    }
 
-    static class ViewHolder extends RecyclerView.ViewHolder
-    {
+    static class ViewHolder extends RecyclerView.ViewHolder{
+
         private final ImageView j_img;
         private final TextView j_title;
-        private final TextView j_pay;
-        private final TextView j_loc;
-
+        private final TextView j_status;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             j_img = itemView.findViewById(R.id.h_img);
             j_title = itemView.findViewById(R.id.h_name);
-            j_pay = itemView.findViewById(R.id.job_pay);
-            j_loc = itemView.findViewById(R.id.h_status);
-
+            j_status = itemView.findViewById(R.id.h_status);
         }
 
         public ImageView getJ_img() {
@@ -53,32 +56,23 @@ public class jobListAdapter extends RecyclerView.Adapter<jobListAdapter.ViewHold
             return j_title;
         }
 
-        public TextView getJ_pay() {
-            return j_pay;
-        }
-
-        public TextView getJ_loc() {
-            return j_loc;
+        public TextView getJ_status() {
+            return j_status;
         }
     }
 
 
-    @NonNull
     @Override
-    public jobListAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_job,parent, false);
-        return new ViewHolder(view);
-    }
-
-    @Override
-    public void onBindViewHolder(@NonNull jobListAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull jobHistoryAdapter.ViewHolder holder, int position) {
         Glide.with(context)
-                        .load(R.drawable.dog)
-                                .into(holder.getJ_img());
-        holder.getJ_pay().setText(String.valueOf(jobs.get(position).getWage()));
+                .load(R.drawable.dog)
+                .into(holder.getJ_img());
         holder.getJ_title().setText(jobs.get(position).getName());
-        holder.getJ_loc().setText(jobs.get(position).getLocation());
+        holder.getJ_status().setText(jobs.get(position).getStatus());
+
+
+
+
     }
 
     @Override

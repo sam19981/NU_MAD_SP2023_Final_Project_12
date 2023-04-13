@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,11 +14,18 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.nu_mad_sp2023_final_project_12.models.Jobs;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -99,10 +107,48 @@ public class PostJob extends Fragment {
                 Jobs jobs = new Jobs(job_name.getText().toString(), job_desc.getText().toString(), mUser.getEmail(), null, null, "available", null, Double.parseDouble(job_pay.getText().toString()),job_time.getText().toString());
 
 
-                db.collection("jobs").document().set(jobs).addOnSuccessListener(new OnSuccessListener<Void>() {
+                CollectionReference colref = db.collection("jobs");
+                DocumentReference docref = colref.document();
+                docref.set(jobs).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void unused) {
                                 Toast.makeText(getContext(), "Job posted successfully", Toast.LENGTH_SHORT).show();
+                                DocumentReference dr = db.collection("users").document(mUser.getEmail());
+                                        dr.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                if(task.isSuccessful()){
+                                                    DocumentSnapshot doc = task.getResult();
+                                                    if(doc.exists()){
+                                                        List<String> jobs = (List<String>) doc.get("postedJobs");
+                                                        String docId = docref.getId();
+                                                        jobs.add(docId);
+
+                                                        dr.update("postedJobs",jobs)
+                                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                    @Override
+                                                                    public void onSuccess(Void unused) {
+                                                                        Log.d("success", "doc updated successfully ");
+                                                                    }
+                                                                })
+                                                                .addOnFailureListener(new OnFailureListener() {
+                                                                    @Override
+                                                                    public void onFailure(@NonNull Exception e) {
+                                                                        Log.d("fail", "error update doc ");
+                                                                    }
+                                                                });
+
+
+                                                    }
+                                                    else{
+                                                        Log.d("nodoc", "onComplete: no such doc");
+                                                    }
+                                                }
+                                                else{
+                                                    Log.d("fail", "onComplete: task fail");
+                                                }
+                                            }
+                                        });
                             }
                         })
                         .addOnFailureListener(new OnFailureListener() {

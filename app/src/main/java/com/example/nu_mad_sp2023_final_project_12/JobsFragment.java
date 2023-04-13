@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.nu_mad_sp2023_final_project_12.Adapter.jobListAdapter;
+
 import com.example.nu_mad_sp2023_final_project_12.models.Jobs;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;

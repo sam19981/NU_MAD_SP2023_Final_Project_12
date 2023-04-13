@@ -39,7 +39,6 @@
                 android:id="@+id/h_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="walking a dog in the park"
                 android:textColor="@color/black"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -48,14 +47,14 @@
                 android:id="@+id/job_pay"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/purple_500"
+                android:text="Status:"
+                android:textColor="@color/black"
                 android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/h_status"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="roxbury, MA"
                 android:textColor="@color/purple_500"
                 android:textSize="14sp" />
 

@@ -116,7 +116,7 @@ public class HomeFragment extends Fragment {
 
         List<Fragment> fragments = new ArrayList<>();
         fragments.add(new JobsFragment());
-        fragments.add(new Fragment());
+        fragments.add(new JobHistory());
         fragments.add(new Fragment());
         viewPager = (ViewPager2) view.findViewById(R.id.viewPager);
         viewPagerAdapter = new ViewPagerAdapter(parentActivity.getSupportFragmentManager(),getLifecycle(), fragments);
