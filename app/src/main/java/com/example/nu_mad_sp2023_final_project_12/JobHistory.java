@@ -2,11 +2,26 @@ package com.example.nu_mad_sp2023_final_project_12;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.example.nu_mad_sp2023_final_project_12.Adapter.jobHistoryAdapter;
+import com.example.nu_mad_sp2023_final_project_12.models.Jobs;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -21,8 +36,14 @@ public class JobHistory extends Fragment {
     private static final String ARG_PARAM2 = "param2";
 
     // TODO: Rename and change types of parameters
+
     private String mParam1;
     private String mParam2;
+
+    FirebaseFirestore dataBase;
+
+    private RecyclerView jobHistory;
+    private jobHistoryAdapter jobhistoryAdapter;
 
     public JobHistory() {
         // Required empty public constructor
@@ -53,12 +74,39 @@ public class JobHistory extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        dataBase = FirebaseFirestore.getInstance();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        List<Jobs> jobList = new ArrayList<>();
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_job_history, container, false);
+        View view = inflater.inflate(R.layout.history_list, container, false);
+
+        jobHistory = view.findViewById(R.id.historyList);
+        dataBase.collection("jobs").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()){
+                    for(QueryDocumentSnapshot documentSnapshot : task.getResult()){
+                        Jobs job =documentSnapshot.toObject(Jobs.class);
+                        jobList.add(job);
+
+                    }
+                    jobHistory.setLayoutManager(new LinearLayoutManager(getContext()));
+                    jobhistoryAdapter = new jobHistoryAdapter(jobList,getContext());
+                    jobHistory.setAdapter(jobhistoryAdapter);
+
+                }
+                else{
+                    Log.d("fail", "onComplete: job history failiure");
+                }
+            }
+        });
+
+
+
+        return view;
     }
 }

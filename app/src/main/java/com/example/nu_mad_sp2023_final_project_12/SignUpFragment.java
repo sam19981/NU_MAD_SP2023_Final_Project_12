@@ -41,6 +41,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.util.ArrayList;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -202,7 +204,7 @@ public class SignUpFragment extends Fragment implements DisplayTakenPhoto {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if (task.isSuccessful()){
-                        UserData newUser = new UserData(userName,email,URI.toString());
+                        UserData newUser = new UserData(userName,email,URI.toString(),new ArrayList<>());
                         DocumentReference docRef = db.collection("users").document(newUser.getEmail());
                         docRef.set(newUser).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override

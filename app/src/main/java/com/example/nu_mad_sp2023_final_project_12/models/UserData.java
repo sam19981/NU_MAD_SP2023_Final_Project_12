@@ -1,6 +1,7 @@
 package com.example.nu_mad_sp2023_final_project_12.models;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class UserData implements Serializable {
 
@@ -8,13 +9,26 @@ public class UserData implements Serializable {
     private String email;
     private String profilepicture;
 
+    private List<String> postedJobs;
+
+    public List<String> getPostedJobs() {
+        return postedJobs;
+    }
+
+    public void setPostedJobs(List<String> postedJobs) {
+        this.postedJobs = postedJobs;
+    }
+
+
     public UserData() {
     }
 
-    public UserData(String name, String email, String profilepicture) {
+    public UserData(String name, String email, String profilepicture, List<String> postedJobs) {
         this.name = name;
         this.email = email;
         this.profilepicture = profilepicture;
+        this.postedJobs = postedJobs;
+
     }
 
     public String getName() {
