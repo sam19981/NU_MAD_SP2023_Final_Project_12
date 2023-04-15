@@ -25,6 +25,8 @@ public class MainActivity extends AppCompatActivity {
 
     private static UserData currentBio;
 
+    private FragmentManager fragmentManager;
+
     public static UserData getCurrentBio() {
         return currentBio;
     }
@@ -40,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         currentUser = mAuth.getCurrentUser();
+        fragmentManager = getSupportFragmentManager();
     }
 
     protected void onStart() {
@@ -64,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
                         UserData  User = documentSnapshot.toObject(UserData.class);
                         MainActivity.setCurrentBio(User);
                         Log.d("data",currentBio.toString());
-                        replaceFragment(new HomeFragment(),"logintohome");
+                        replaceFragment(new HomeFragment(),"home");
                     }
                 }
             });
@@ -75,11 +78,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void replaceFragment(Fragment fragment,String tag) {
-        FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.rootLayoutId, fragment,tag);
-        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.replace(R.id.rootLayoutId, fragment);
+        fragmentTransaction.addToBackStack(tag);
         fragmentTransaction.commit();
+    }
+
+    public void popBackstack(String tag) {
+        if (!tag.equals("")) {
+                fragmentManager.popBackStack(tag,FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        } else {
+            fragmentManager.popBackStack();
+        }
     }
 
 }

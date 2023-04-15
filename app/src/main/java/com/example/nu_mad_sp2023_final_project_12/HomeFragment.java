@@ -1,5 +1,6 @@
 package com.example.nu_mad_sp2023_final_project_12;
 
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,14 +16,21 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.nu_mad_sp2023_final_project_12.Adapter.ViewPagerAdapter;
+import com.example.nu_mad_sp2023_final_project_12.interfaces.DisplayTakenPhoto;
 import com.example.nu_mad_sp2023_final_project_12.models.UserData;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +42,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
  * Use the {@link HomeFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements DisplayTakenPhoto {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -55,6 +63,10 @@ public class HomeFragment extends Fragment {
     private MainActivity parentActivity;
     private ImageView logOut;
     private FirebaseAuth mAuth;
+    private StorageReference storageReference ;
+    private FirebaseStorage storage;
+    private FirebaseFirestore db;
+
 
 
     public HomeFragment() {
@@ -87,8 +99,10 @@ public class HomeFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
         mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
         currentUserBio = MainActivity.getCurrentBio();
         parentActivity = (MainActivity)getActivity();
+        storage = FirebaseStorage.getInstance();
     }
 
     @Override
@@ -98,11 +112,18 @@ public class HomeFragment extends Fragment {
         View view = inflater.inflate(R.layout.home, container, false);
 
         name = view.findViewById(R.id.id_fullName_TextView);
-        profilepic = view.findViewById(R.id.profilePicId);
+        profilepic = view.findViewById(R.id.id_Profile_Image);
         changeProfilePic = view.findViewById(R.id.changeProfilePicId);
         logOut = view.findViewById(R.id.logout);
         name.setText(currentUserBio.getName());
-//        Glide.with(getContext()).load(currentUserBio.getProfilepicture()).into(profilepic);
+        Glide.with(parentActivity).load(currentUserBio.getProfilepicture()).into(profilepic);
+
+        changeProfilePic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                parentActivity.replaceFragment(new CameraFragment(HomeFragment.this),"profilepicChange");
+            }
+        });
 
 
         logOut.setOnClickListener(new View.OnClickListener() {
@@ -116,8 +137,8 @@ public class HomeFragment extends Fragment {
 
         List<Fragment> fragments = new ArrayList<>();
         fragments.add(new JobsFragment());
+        fragments.add(new ChatFragment());
         fragments.add(new JobHistory());
-        fragments.add(new Fragment());
         viewPager = (ViewPager2) view.findViewById(R.id.viewPager);
         viewPagerAdapter = new ViewPagerAdapter(parentActivity.getSupportFragmentManager(),getLifecycle(), fragments);
         viewPager.setAdapter(viewPagerAdapter);
@@ -145,5 +166,59 @@ public class HomeFragment extends Fragment {
         });
 
         return view;
+    }
+
+    @Override
+    public void displayphoto(Uri URI) {
+        storageReference = storage.getReference().child("images/"+URI.getLastPathSegment());
+        UploadTask uploadImage  = storageReference.putFile(URI);
+        uploadImage.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        db.collection("users").document(currentUserBio.getEmail()).update("profilepicture",uri.toString()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void unused) {
+                                UserData updateUserBio = MainActivity.getCurrentBio();
+                                updateUserBio.setProfilepicture(uri.toString());
+                                MainActivity.setCurrentBio(updateUserBio);
+                                parentActivity.replaceFragment(new HomeFragment(),"newhome");
+                                Toast.makeText(parentActivity, "Profile changed Successfully!!", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                });
+
+            }
+        });
+    }
+
+    @Override
+    public void displayphotoFromgallery(Uri URI) {
+        storageReference = storage.getReference().child("images/"+URI.getLastPathSegment());
+        UploadTask uploadImage  = storageReference.putFile(URI);
+        uploadImage.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        db.collection("users").document(currentUserBio.getEmail()).update("profilepicture",uri.toString()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void unused) {
+                                UserData updateUserBio = MainActivity.getCurrentBio();
+                                updateUserBio.setProfilepicture(uri.toString());
+                                MainActivity.setCurrentBio(updateUserBio);
+                                parentActivity.replaceFragment(new HomeFragment(),"newhome");
+                                Toast.makeText(parentActivity, "Profile changed Successfully!!", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                });
+
+            }
+        });
     }
 }

@@ -10,37 +10,9 @@
         android:id="@+id/recyclerId"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="95dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView2" />
-
-    <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="62dp"
-        android:layout_height="74dp"
-        android:layout_marginTop="5dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/previous" />
-
-    <TextView
-        android:id="@+id/userNameId"
-        android:layout_width="62dp"
-        android:layout_height="15dp"
-        android:layout_marginStart="16dp"
-        android:text="TextView"
-        app:layout_constraintStart_toEndOf="@+id/userProfilepicId"
-        tools:layout_editor_absoluteY="41dp" />
-
-    <ImageView
-        android:id="@+id/userProfilepicId"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_marginStart="16dp"
-        app:layout_constraintBottom_toBottomOf="@+id/userNameId"
-        app:layout_constraintStart_toEndOf="@+id/imageView2"
-        app:layout_constraintTop_toTopOf="@+id/userNameId" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

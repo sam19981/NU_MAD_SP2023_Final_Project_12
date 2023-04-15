@@ -40,6 +40,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 
@@ -57,22 +58,23 @@ public class SignUpFragment extends Fragment implements DisplayTakenPhoto {
     private static final String ARG_PARAM2 = "param2";
 
 
-    ImageView profilePic;
-    TextInputEditText etRegEmail;
-    TextInputEditText etRegPassword;
-    TextInputEditText euserName;
-    TextView tvLoginHere;
-    Button btnRegister;
-    FirebaseAuth mAuth;
-    FirebaseFirestore db;
+    private ImageView profilePic;
+    private TextInputEditText etRegEmail;
+    private TextInputEditText etRegPassword;
+    private TextInputEditText euserName;
+    private TextView tvLoginHere;
+    private Button btnRegister;
+    private FirebaseAuth mAuth;
+    private FirebaseFirestore db;
+    private MainActivity parentActivity;
 
-    StorageReference storageReference ;
+    private StorageReference storageReference ;
 
     private FirebaseStorage storage;
 
 
     // TODO: Rename and change types of parameters
-    private Uri URI= Uri.parse("");
+    private Uri URI;
 
     private static final int PERMISSIONS_CODE = 0x100;
 
@@ -105,13 +107,14 @@ public class SignUpFragment extends Fragment implements DisplayTakenPhoto {
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         storage = FirebaseStorage.getInstance();
+        parentActivity = (MainActivity) getActivity();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view =  inflater.inflate(R.layout.fragment_sign_in, container, false);
+        View view =  inflater.inflate(R.layout.fragment_sign_up, container, false);
 
         profilePic = view.findViewById(R.id.profilePicId);
         etRegEmail = view.findViewById(R.id.etRegEmail);
@@ -132,11 +135,10 @@ public class SignUpFragment extends Fragment implements DisplayTakenPhoto {
         profilePic.setOnClickListener(new View.OnClickListener() {
                                           @Override
                                           public void onClick(View v) {
+                                              Log.d("checking","profile");
                                               if(cameraAllowed && readAllowed && writeAllowed){
                                                   Toast.makeText(getContext(), "All permissions granted!", Toast.LENGTH_SHORT).show();
-                                                  /*getActivity().getSupportFragmentManager().beginTransaction()
-                                                          .replace(R.id.rootLayoutId, new CameraFragment(SignUpFragment.this), "cameraFragment").addToBackStack(null)
-                                                          .commit();*/
+                                                  parentActivity.replaceFragment(new CameraFragment(SignUpFragment.this),"signupToCamera");
 
                                               }else{
                                                   requestPermissions(new String[]{
@@ -154,7 +156,7 @@ public class SignUpFragment extends Fragment implements DisplayTakenPhoto {
         });
 
         tvLoginHere.setOnClickListener(view1 ->{
-            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.rootLayoutId,new LoginFragment()).addToBackStack(null).commit();
+            parentActivity.replaceFragment(new LoginFragment(),"signUpLogin");
         });
 
         requireActivity().getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true) {
@@ -175,9 +177,7 @@ public class SignUpFragment extends Fragment implements DisplayTakenPhoto {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if(grantResults.length>2){
-            /*getActivity().getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.rootLayoutId, new CameraFragment(SignUpFragment.this), "cameraFragment").addToBackStack(null)
-                    .commit();*/
+            parentActivity.replaceFragment(new CameraFragment(SignUpFragment.this),"signUpToCamera");
         }else{
             Toast.makeText(getContext(), "You must allow Camera and Storage permissions!", Toast.LENGTH_LONG).show();
         }
@@ -199,54 +199,42 @@ public class SignUpFragment extends Fragment implements DisplayTakenPhoto {
             euserName.setError("Username is empty");
             euserName.requestFocus();
         }
+        else if(URI==null)
+        {
+            Toast.makeText(getContext(), "Please set a Profile Pic", Toast.LENGTH_SHORT).show();
+        }
         else{
             mAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if (task.isSuccessful()){
-                        UserData newUser = new UserData(userName,email,URI.toString(),new ArrayList<>());
-                        DocumentReference docRef = db.collection("users").document(newUser.getEmail());
-                        docRef.set(newUser).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        storageReference = storage.getReference().child("images/"+URI.getLastPathSegment());
+                        UploadTask uploadImage  = storageReference.putFile(URI);
+                        uploadImage.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                             @Override
-                            public void onSuccess(Void unused) {
-                                Toast.makeText(getContext(), "User registered successfully", Toast.LENGTH_SHORT).show();
-                                MainActivity.setCurrentBio(newUser);
-                                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.rootLayoutId,new HomeFragment(),"signUptoHome").addToBackStack(null).commit();
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(getContext(), "Registration Error: "+e.getMessage(), Toast.LENGTH_SHORT).show();
-                                Log.d("regError", "onFailure: " + e.getMessage());
-                            }
-                        });
-
-
-                                /*task.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                     @Override
-                                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                        taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                    public void onSuccess(Uri uri) {
+                                        UserData newUser = new UserData(userName,email,uri.toString());
+                                        DocumentReference docRef = db.collection("users").document(newUser.getEmail());
+                                        docRef.set(newUser).addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
-                                            public void onSuccess(Uri uri) {
-                                                UserData newUser = new UserData(userName,email,uri.toString());
-                                                DocumentReference docRef = db.collection("users").document(newUser.getEmail());
-                                                docRef.set(newUser).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                    @Override
-                                                    public void onSuccess(Void unused) {
-                                                        Toast.makeText(getContext(), "User registered successfully", Toast.LENGTH_SHORT).show();
-                                                        //getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.rootLayoutId,ChatFragment.newInstance(newUser),"signUpToChat").addToBackStack(null).commit();
-                                                    }
-                                                }).addOnFailureListener(new OnFailureListener() {
-                                                    @Override
-                                                    public void onFailure(@NonNull Exception e) {
-                                                        Toast.makeText(getContext(), "Registration Error: "+e.getMessage(), Toast.LENGTH_SHORT).show();
-                                                        Log.d("regError", "onFailure: " + e.getMessage());
-                                                    }
-                                                });
+                                            public void onSuccess(Void unused) {
+                                                Toast.makeText(getContext(), "User registered successfully", Toast.LENGTH_SHORT).show();
+                                                MainActivity.setCurrentBio(newUser);
+                                                parentActivity.replaceFragment(new HomeFragment(),"home");
+                                            }
+                                        }).addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Toast.makeText(getContext(), "Registration Error: "+e.getMessage(), Toast.LENGTH_SHORT).show();
                                             }
                                         });
                                     }
-                                });*/
+                                });
+                            }
+                        });
                     }else{
                         Toast.makeText(getContext(), "Registration Error: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
@@ -268,7 +256,8 @@ public class SignUpFragment extends Fragment implements DisplayTakenPhoto {
 
             @Override
             public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                getActivity().getSupportFragmentManager().popBackStackImmediate();
+                parentActivity.getSupportFragmentManager().popBackStackImmediate();
+//                parentActivity.replaceFragment(SignUpFragment.newInstance(URI),"signUpWithpic");
                 return false;
             }
         }).into(profilePic);
@@ -286,8 +275,8 @@ public class SignUpFragment extends Fragment implements DisplayTakenPhoto {
 
             @Override
             public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                getActivity().getSupportFragmentManager().popBackStackImmediate();
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.rootLayoutId,SignUpFragment.newInstance(URI),"galleryToSignup").commit();
+                parentActivity.getSupportFragmentManager().popBackStackImmediate();
+                parentActivity.replaceFragment(SignUpFragment.newInstance(URI),"signUpWithpic");
                 return false;
             }
         }).into(profilePic);
