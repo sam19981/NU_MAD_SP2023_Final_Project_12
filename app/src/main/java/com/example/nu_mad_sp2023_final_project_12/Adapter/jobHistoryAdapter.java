@@ -8,9 +8,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.nu_mad_sp2023_final_project_12.HistoryDetails;
+import com.example.nu_mad_sp2023_final_project_12.JobDescription;
 import com.example.nu_mad_sp2023_final_project_12.R;
 import com.example.nu_mad_sp2023_final_project_12.models.Jobs;
 
@@ -22,9 +25,12 @@ public class jobHistoryAdapter extends RecyclerView.Adapter<jobHistoryAdapter.Vi
 
     private Context context;
 
+
+
     public jobHistoryAdapter(List<Jobs> jobs, Context context) {
         this.jobs = jobs;
         this.context = context;
+
     }
 
     @NonNull
@@ -40,12 +46,14 @@ public class jobHistoryAdapter extends RecyclerView.Adapter<jobHistoryAdapter.Vi
         private final ImageView j_img;
         private final TextView j_title;
         private final TextView j_status;
+        View currentHistory;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             j_img = itemView.findViewById(R.id.h_img);
             j_title = itemView.findViewById(R.id.h_name);
             j_status = itemView.findViewById(R.id.h_status);
+            currentHistory = itemView;
         }
 
         public ImageView getJ_img() {
@@ -64,11 +72,22 @@ public class jobHistoryAdapter extends RecyclerView.Adapter<jobHistoryAdapter.Vi
 
     @Override
     public void onBindViewHolder(@NonNull jobHistoryAdapter.ViewHolder holder, int position) {
+
+        Jobs currJob = jobs.get(position);
         Glide.with(context)
                 .load(R.drawable.dog)
                 .into(holder.getJ_img());
         holder.getJ_title().setText(jobs.get(position).getName());
         holder.getJ_status().setText(jobs.get(position).getStatus());
+
+        holder.currentHistory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AppCompatActivity appCompatActivity = (AppCompatActivity)context;
+                appCompatActivity.getSupportFragmentManager()
+                        .beginTransaction().replace(R.id.rootLayoutId, HistoryDetails.newInstance("","",currJob)).addToBackStack(null).commit();
+            }
+        });
 
 
 

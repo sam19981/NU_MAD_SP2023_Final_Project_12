@@ -1,9 +1,12 @@
 package com.example.nu_mad_sp2023_final_project_12;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
@@ -67,6 +70,9 @@ public class HomeFragment extends Fragment implements DisplayTakenPhoto {
     private FirebaseStorage storage;
     private FirebaseFirestore db;
 
+    private static final int PERMISSIONS_CODE = 0x100;
+
+
 
 
     public HomeFragment() {
@@ -118,10 +124,27 @@ public class HomeFragment extends Fragment implements DisplayTakenPhoto {
         name.setText(currentUserBio.getName());
         Glide.with(parentActivity).load(currentUserBio.getProfilepicture()).into(profilepic);
 
+        Boolean cameraAllowed = ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED;
+        Boolean readAllowed = ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+        Boolean writeAllowed = ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+
+
         changeProfilePic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                parentActivity.replaceFragment(new CameraFragment(HomeFragment.this),"profilepicChange");
+                Log.d("checking","profile");
+                if(cameraAllowed && readAllowed && writeAllowed){
+                    Toast.makeText(getContext(), "All permissions granted!", Toast.LENGTH_SHORT).show();
+                    parentActivity.replaceFragment(new CameraFragment(HomeFragment.this),"profilepicChange");
+
+
+                }else{
+                    requestPermissions(new String[]{
+                            android.Manifest.permission.CAMERA,
+                            android.Manifest.permission.READ_EXTERNAL_STORAGE,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    }, PERMISSIONS_CODE);
+                }
             }
         });
 
@@ -137,8 +160,9 @@ public class HomeFragment extends Fragment implements DisplayTakenPhoto {
 
         List<Fragment> fragments = new ArrayList<>();
         fragments.add(new JobsFragment());
-        fragments.add(new ChatFragment());
         fragments.add(new JobHistory());
+        fragments.add(new ChatFragment());
+
         viewPager = (ViewPager2) view.findViewById(R.id.viewPager);
         viewPagerAdapter = new ViewPagerAdapter(parentActivity.getSupportFragmentManager(),getLifecycle(), fragments);
         viewPager.setAdapter(viewPagerAdapter);

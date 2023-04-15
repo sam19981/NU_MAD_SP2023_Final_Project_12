@@ -8,9 +8,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.nu_mad_sp2023_final_project_12.JobDescription;
 import com.example.nu_mad_sp2023_final_project_12.R;
 import com.example.nu_mad_sp2023_final_project_12.models.Jobs;
 
@@ -35,6 +37,8 @@ public class jobListAdapter extends RecyclerView.Adapter<jobListAdapter.ViewHold
         private final TextView j_pay;
         private final TextView j_loc;
 
+        View currentJob;
+
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -42,6 +46,7 @@ public class jobListAdapter extends RecyclerView.Adapter<jobListAdapter.ViewHold
             j_title = itemView.findViewById(R.id.h_name);
             j_pay = itemView.findViewById(R.id.job_pay);
             j_loc = itemView.findViewById(R.id.h_status);
+            currentJob = itemView;
 
         }
 
@@ -73,12 +78,22 @@ public class jobListAdapter extends RecyclerView.Adapter<jobListAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull jobListAdapter.ViewHolder holder, int position) {
+        Jobs currJob = jobs.get(position);
         Glide.with(context)
                         .load(R.drawable.dog)
                                 .into(holder.getJ_img());
         holder.getJ_pay().setText(String.valueOf(jobs.get(position).getWage()));
         holder.getJ_title().setText(jobs.get(position).getName());
         holder.getJ_loc().setText(jobs.get(position).getLocation());
+        holder.currentJob.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AppCompatActivity appCompatActivity = (AppCompatActivity)context;
+                appCompatActivity.getSupportFragmentManager()
+                        .beginTransaction().replace(R.id.rootLayoutId, JobDescription.newInstance("","",currJob)).addToBackStack(null).commit();
+            }
+        });
+
     }
 
     @Override

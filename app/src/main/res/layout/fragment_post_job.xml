@@ -17,7 +17,7 @@
         app:layout_constraintTop_toBottomOf="@+id/j_desc" />
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/jd_wage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="40dp"
@@ -32,7 +32,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:text="Job Description"
-        app:layout_constraintStart_toStartOf="@+id/textView3"
+        app:layout_constraintStart_toStartOf="@+id/jd_wage"
         app:layout_constraintTop_toBottomOf="@+id/j_dur" />
 
     <EditText
@@ -46,7 +46,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
     <TextView
-        android:id="@+id/textView6"
+        android:id="@+id/jd_desc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="40dp"
@@ -62,8 +62,8 @@
         android:layout_marginTop="10dp"
         android:ems="10"
         android:inputType="textPersonName"
-        app:layout_constraintStart_toStartOf="@+id/textView6"
-        app:layout_constraintTop_toBottomOf="@+id/textView6" />
+        app:layout_constraintStart_toStartOf="@+id/jd_desc"
+        app:layout_constraintTop_toBottomOf="@+id/jd_desc" />
 
     <TextView
         android:id="@+id/textView7"
@@ -125,8 +125,8 @@
         android:layout_marginTop="10dp"
         android:ems="10"
         android:inputType="textPersonName"
-        app:layout_constraintStart_toStartOf="@+id/textView3"
-        app:layout_constraintTop_toBottomOf="@+id/textView3" />
+        app:layout_constraintStart_toStartOf="@+id/jd_wage"
+        app:layout_constraintTop_toBottomOf="@+id/jd_wage" />
 
     <ImageView
         android:id="@+id/imageView7"

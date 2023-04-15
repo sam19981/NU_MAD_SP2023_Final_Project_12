@@ -47,6 +47,7 @@ public class PostJob extends Fragment {
     private EditText job_pay;
     private EditText job_time;
     private EditText job_desc;
+
     private String job_url;
     private Button jobPost;
 
