@@ -3,6 +3,7 @@ package com.example.nu_mad_sp2023_final_project_12;
 
 import static android.app.Activity.RESULT_OK;
 
+import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.net.Uri;
@@ -69,7 +70,6 @@ public class CameraFragment extends Fragment implements View.OnClickListener{
 
     public CameraFragment() {
         // Required empty public constructor
-
     }
 
 
@@ -161,8 +161,6 @@ public class CameraFragment extends Fragment implements View.OnClickListener{
                 contentValues
         )
                 .build();
-
-
         imageCapture.takePicture(outputFileOptions,
                 ContextCompat.getMainExecutor(getContext()),
                 new ImageCapture.OnImageSavedCallback() {
@@ -178,7 +176,6 @@ public class CameraFragment extends Fragment implements View.OnClickListener{
                     }
                 });
     }
-
 
     @Override
     public void onClick(View view) {
@@ -222,7 +219,6 @@ public class CameraFragment extends Fragment implements View.OnClickListener{
                 e.printStackTrace();
             }
         },ContextCompat.getMainExecutor(getContext()));
-
     }
 
 

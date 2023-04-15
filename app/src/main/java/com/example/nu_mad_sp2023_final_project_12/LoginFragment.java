@@ -138,7 +138,7 @@ public class LoginFragment extends Fragment {
                                     DocumentSnapshot documentSnapshot = task.getResult();
                                     UserData  currentUser = documentSnapshot.toObject(UserData.class);
                                     MainActivity.setCurrentBio(currentUser);
-                                    parentActivity.replaceFragment(new HomeFragment(),"logintohome");
+                                    parentActivity.replaceFragment(new HomeFragment(),"home");
                                 }
                             }
                         });
