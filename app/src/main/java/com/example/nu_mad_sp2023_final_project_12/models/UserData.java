@@ -1,6 +1,7 @@
 package com.example.nu_mad_sp2023_final_project_12.models;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class UserData implements Serializable {
@@ -21,6 +22,14 @@ public class UserData implements Serializable {
 
 
     public UserData() {
+    }
+
+    public UserData(String name, String email, String profilepicture)
+    {
+        this.name = name;
+        this.email = email;
+        this.profilepicture = profilepicture;
+        this.postedJobs = new ArrayList<>();
     }
 
     public UserData(String name, String email, String profilepicture, List<String> postedJobs) {

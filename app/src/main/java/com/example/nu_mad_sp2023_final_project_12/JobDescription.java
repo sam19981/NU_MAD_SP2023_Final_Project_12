@@ -103,7 +103,8 @@ public class JobDescription extends Fragment {
         backbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                parentActivity.replaceFragment(new JobsFragment(),"descriptiontojob");
+                parentActivity.replaceFragment(new HomeFragment(),"descriptiontojob");
+                //parentActivity.popBackstack("");
             }
         });
 
