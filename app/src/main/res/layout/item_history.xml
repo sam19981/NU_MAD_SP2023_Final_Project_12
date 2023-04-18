@@ -59,6 +59,16 @@
                 android:textSize="14sp" />
 
         </LinearLayout>
+
+        <ImageView
+            android:visibility="invisible"
+            android:id="@+id/mark_as_cmp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/tick" />
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>
