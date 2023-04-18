@@ -28,7 +28,9 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import kotlinx.coroutines.Job;
 
@@ -88,6 +90,8 @@ public class JobsFragment extends Fragment {
         }
         dataBase = FirebaseFirestore.getInstance();
 
+        Map<String, Jobs> jobsMap = new HashMap<>();
+
 
         dataBase.collection("jobs").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
@@ -95,11 +99,13 @@ public class JobsFragment extends Fragment {
                 if(task.isSuccessful()){
                     for(QueryDocumentSnapshot documentSnapshot : task.getResult()){
                         Jobs job =documentSnapshot.toObject(Jobs.class);
-                        if(!job.getPostedBy().equals(MainActivity.getCurrentBio().getEmail())) {
+                        if(!job.getPostedBy().equals(MainActivity.getCurrentBio().getEmail()) && job.getTaken() == null) {
                             jobList.add(job);
+                            jobsMap.put(documentSnapshot.getId(),job);
                         }
 
                     }
+
                     jobAdapter.setJobs(jobList);
                     jobAdapter.notifyDataSetChanged();
                     addeventlistener();
@@ -125,7 +131,7 @@ public class JobsFragment extends Fragment {
                     jobList.clear();
                     for(DocumentSnapshot documentSnapshot: value.getDocuments()){
                             Jobs job =documentSnapshot.toObject(Jobs.class);
-                            if(!job.getPostedBy().equals(MainActivity.getCurrentBio().getEmail())) {
+                            if(!job.getPostedBy().equals(MainActivity.getCurrentBio().getEmail()) && job.getTaken() == null) {
                                 jobList.add(job);
                             }
                         jobAdapter.setJobs(jobList);
