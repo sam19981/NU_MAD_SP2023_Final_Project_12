@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 
+import com.bumptech.glide.Glide;
 import com.example.nu_mad_sp2023_final_project_12.R;
 import com.example.nu_mad_sp2023_final_project_12.models.UserData;
 
@@ -83,8 +84,8 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
         UserData userHere = userList.get(position);
 
-
         holder.getUserName().setText(userHere.getName());
+        Glide.with(context).load(userHere.getProfilepicture()).into(holder.getProfilePic());
 
         holder.getCurrentUser().setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,7 +93,6 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
             }
         });
-
 
     }
 

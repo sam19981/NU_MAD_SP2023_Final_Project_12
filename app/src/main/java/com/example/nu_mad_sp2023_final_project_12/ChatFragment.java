@@ -118,15 +118,20 @@ public class ChatFragment extends Fragment {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-                            if(task.getResult().size()>1) {
+                            List<String> friends = MainActivity.getCurrentBio().getFriendList();
+                            if(task.getResult().size()>1 && friends.size()>=1) {
                                 for (QueryDocumentSnapshot document : task.getResult()) {
                                     Log.d("UserList", document.getId() + " => " + document.getData());
                                     UserData user = document.toObject(UserData.class);
-                                    if (!user.getEmail().equals(mUser.getEmail())) {
+                                    if(friends.contains(user.getEmail()))
+                                    {
                                         allUsers.add(user);
                                     }
                                 }
                                 updateRecyclerView(allUsers);
+                            }
+                            else{
+                                Log.d("UserList", "No user to Chat with please pick a job.", task.getException());
                             }
                         } else {
                             Log.w("UserList", "Error getting documents.", task.getException());

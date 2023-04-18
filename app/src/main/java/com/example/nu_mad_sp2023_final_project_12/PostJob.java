@@ -25,6 +25,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -122,6 +123,10 @@ public class PostJob extends Fragment {
                                                     DocumentSnapshot doc = task.getResult();
                                                     if(doc.exists()){
                                                         List<String> jobs = (List<String>) doc.get("postedJobs");
+                                                        if(jobs==null)
+                                                        {
+                                                            jobs = new ArrayList<>();
+                                                        }
                                                         String docId = docref.getId();
                                                         jobs.add(docId);
 
