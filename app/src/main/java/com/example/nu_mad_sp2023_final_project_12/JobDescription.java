@@ -3,9 +3,12 @@ package com.example.nu_mad_sp2023_final_project_12;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +18,28 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.nu_mad_sp2023_final_project_12.models.Jobs;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -43,6 +68,12 @@ public class JobDescription extends Fragment {
     private TextView job_time;
 
     private ImageView backbutton;
+    private Button sndbtn;
+    FirebaseFirestore db;
+    FirebaseAuth mAuth;
+    private static CollectionReference collRef;
+    String  currentConversation="";
+
 
     public JobDescription() {
         // Required empty public constructor
@@ -77,6 +108,8 @@ public class JobDescription extends Fragment {
 
         }
         parentActivity = (MainActivity) getActivity();
+        db = FirebaseFirestore.getInstance();
+        mAuth = FirebaseAuth.getInstance();
     }
 
     @Override
@@ -91,6 +124,7 @@ public class JobDescription extends Fragment {
         job_pay = view.findViewById(R.id.jd_wage);
 
         backbutton = view.findViewById(R.id.backbtn);
+        sndbtn = view.findViewById(R.id.sendbtnId);
 
         job_title.setText(currJob.getName());
         Glide.with(getContext())
@@ -107,15 +141,81 @@ public class JobDescription extends Fragment {
                 //parentActivity.popBackstack("");
             }
         });
+        sndbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                collRef = db.collection("conversations");
+                List<String> userIds = Arrays.asList(MainActivity.getCurrentBio().getEmail(), currJob.getPostedBy());
 
+                Collections.sort(userIds);
 
+                String chatRecordID = Utils.generateUniqueID(userIds);
 
+                DocumentReference collRef = db.collection("conversations").document(chatRecordID);
 
+                collRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                                                @Override
+                                                public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+                                                    CollectionReference documentReference = db.collection("conversations");
+                                                    CollectionReference userReference = db.collection("users");
+                                                    if (error != null) {
+                                                        Log.d("Conversation", "Error");
+                                                        return;
 
+                                                    }
+                                                    if (!value.exists()) {
+                                                        Log.d("Conversation", "Value Empty");
 
+                                                        documentReference.document(chatRecordID).set(new Conversation(userIds)).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                            @Override
+                                                            public void onComplete(@NonNull Task<Void> task) {
+                                                                Log.d("Conversation", "created Conversation");
+                                                                currentConversation = chatRecordID;
+                                                                userReference.document(MainActivity.getCurrentBio().getEmail()).update("friendList", FieldValue.arrayUnion(currJob.getPostedBy())).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                    @Override
+                                                                    public void onSuccess(Void unused) {
+                                                                        userReference.document(currJob.getPostedBy()).update("friendList", FieldValue.arrayUnion(MainActivity.getCurrentBio().getEmail())).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                            @Override
+                                                                            public void onSuccess(Void unused) {
+                                                                                Log.d("friend","added to friendList");
+                                                                            }
+                                                                        });
 
+                                                                    }
+                                                                });
+                                                            }
+                                                        });
+                                                    } else {
+                                                        Log.d("Conversation", "onEvent: Convo exists");
+                                                            currentConversation = chatRecordID;
 
-
+                                                    }
+                                                }
+                                            }
+                );
+            }
+        });
         return view;
     }
+
+    public class Conversation {
+        private List<String> userIds;
+
+        public Conversation() {
+            // Required empty constructor for Firestore
+        }
+
+        public Conversation(List<String> userIds) {
+            this.userIds = userIds;
+        }
+
+        public List<String> getUserIds() {
+            return userIds;
+        }
+
+        public void setUserIds(List<String> userIds) {
+            this.userIds = userIds;
+        }
+    }
+
 }

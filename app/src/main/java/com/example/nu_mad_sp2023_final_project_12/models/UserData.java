@@ -12,6 +12,8 @@ public class UserData implements Serializable {
 
     private List<String> postedJobs;
 
+    private List<String> friendList;
+
     public List<String> getPostedJobs() {
         return postedJobs;
     }
@@ -20,6 +22,13 @@ public class UserData implements Serializable {
         this.postedJobs = postedJobs;
     }
 
+    public List<String> getFriendList() {
+        return friendList;
+    }
+
+    public void setFriendList(List<String> friendList) {
+        this.friendList = friendList;
+    }
 
     public UserData() {
     }
