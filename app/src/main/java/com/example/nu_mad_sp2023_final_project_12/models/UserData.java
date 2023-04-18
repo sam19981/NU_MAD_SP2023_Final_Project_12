@@ -65,6 +65,17 @@ public class UserData implements Serializable {
         this.email = email;
     }
 
+    @Override
+    public String toString() {
+        return "UserData{" +
+                "name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", profilepicture='" + profilepicture + '\'' +
+                ", postedJobs=" + postedJobs +
+                ", friendList=" + friendList +
+                '}';
+    }
+
     public String getProfilepicture() {
         return profilepicture;
     }
@@ -73,12 +84,4 @@ public class UserData implements Serializable {
         this.profilepicture = profilepicture;
     }
 
-    @Override
-    public String toString() {
-        return "UserData{" +
-                "name='" + name + '\'' +
-                ", email='" + email + '\'' +
-                ", profilepicture='" + profilepicture + '\'' +
-                '}';
-    }
 }
