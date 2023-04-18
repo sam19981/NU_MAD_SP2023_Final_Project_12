@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.nu_mad_sp2023_final_project_12.Adapter.jobHistoryAdapter;
 import com.example.nu_mad_sp2023_final_project_12.models.Jobs;
@@ -44,6 +45,7 @@ public class JobHistory extends Fragment {
 
     private RecyclerView jobHistory;
     private jobHistoryAdapter jobhistoryAdapter;
+    List<Jobs> jobList = new ArrayList<>();
 
     public JobHistory() {
         // Required empty public constructor
@@ -75,28 +77,24 @@ public class JobHistory extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
         dataBase = FirebaseFirestore.getInstance();
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        List<Jobs> jobList = new ArrayList<>();
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.history_list, container, false);
-
-        jobHistory = view.findViewById(R.id.historyList);
+        Log.d("oncreate", "onCreate: oncreate called");
         dataBase.collection("jobs").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if(task.isSuccessful()){
+                List<String> postedJobs = MainActivity.getCurrentBio().getPostedJobs();
+                if(postedJobs == null || postedJobs.size() == 0) {
+                    Toast.makeText(getContext(), "no job history to show", Toast.LENGTH_SHORT).show();
+                }
+                else if(task.isSuccessful()){
                     for(QueryDocumentSnapshot documentSnapshot : task.getResult()){
-                        Jobs job =documentSnapshot.toObject(Jobs.class);
-                        jobList.add(job);
+                        if(postedJobs.contains(documentSnapshot.getId())) {
+                            Jobs job = documentSnapshot.toObject(Jobs.class);
+                            jobList.add(job);
 
+                        }
                     }
-                    jobHistory.setLayoutManager(new LinearLayoutManager(getContext()));
-                    jobhistoryAdapter = new jobHistoryAdapter(jobList,getContext());
-                    jobHistory.setAdapter(jobhistoryAdapter);
+                    jobhistoryAdapter.setJobs(jobList);
+                    jobhistoryAdapter.notifyDataSetChanged();
 
                 }
                 else{
@@ -104,6 +102,20 @@ public class JobHistory extends Fragment {
                 }
             }
         });
+
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.history_list, container, false);
+
+        jobHistory = view.findViewById(R.id.historyList);
+        jobHistory.setLayoutManager(new LinearLayoutManager(getContext()));
+        jobhistoryAdapter = new jobHistoryAdapter(jobList,getContext());
+        jobHistory.setAdapter(jobhistoryAdapter);
 
 
 

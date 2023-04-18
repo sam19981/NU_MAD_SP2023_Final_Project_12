@@ -3,6 +3,7 @@ package com.example.nu_mad_sp2023_final_project_12;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,12 +18,19 @@ import com.example.nu_mad_sp2023_final_project_12.Adapter.jobListAdapter;
 import com.example.nu_mad_sp2023_final_project_12.models.Jobs;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import kotlinx.coroutines.Job;
 
@@ -47,6 +55,9 @@ public class JobsFragment extends Fragment {
     private RecyclerView jobsDisplay;
 
     private jobListAdapter jobAdapter;
+    List<Jobs> jobList = new ArrayList<>();
+
+    CollectionReference collectionReference;
 
     public JobsFragment() {
         // Required empty public constructor
@@ -78,6 +89,59 @@ public class JobsFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
         dataBase = FirebaseFirestore.getInstance();
+
+        Map<String, Jobs> jobsMap = new HashMap<>();
+
+
+        dataBase.collection("jobs").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()){
+                    for(QueryDocumentSnapshot documentSnapshot : task.getResult()){
+                        Jobs job =documentSnapshot.toObject(Jobs.class);
+                        if(!job.getPostedBy().equals(MainActivity.getCurrentBio().getEmail()) && job.getTaken() == null) {
+                            jobList.add(job);
+                            jobsMap.put(documentSnapshot.getId(),job);
+                        }
+
+                    }
+
+                    jobAdapter.setJobs(jobList);
+                    jobAdapter.notifyDataSetChanged();
+                    addeventlistener();
+
+                }
+                else{
+                    Log.d("unsuccess", "job task failiure");
+                }
+
+            }
+        });
+
+    }
+
+    public void addeventlistener(){
+        collectionReference =  dataBase.collection("jobs");
+        collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                if(error!=null){
+                    Log.e("jobsfragment", "onEvent: "+ error.getMessage());
+                }else{
+                    jobList.clear();
+                    for(DocumentSnapshot documentSnapshot: value.getDocuments()){
+                            Jobs job =documentSnapshot.toObject(Jobs.class);
+                            if(!job.getPostedBy().equals(MainActivity.getCurrentBio().getEmail()) && job.getTaken() == null) {
+                                jobList.add(job);
+                            }
+                        jobAdapter.setJobs(jobList);
+                        jobAdapter.notifyDataSetChanged();
+
+                    }
+
+                }
+            }
+        });
     }
 
     @Override
@@ -87,30 +151,10 @@ public class JobsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_jobs, container, false);
 
         jobsDisplay = view.findViewById(R.id.jobsList);
+        jobsDisplay.setLayoutManager(new LinearLayoutManager(getContext()));
+        jobAdapter = new jobListAdapter(jobList,getContext());
+        jobsDisplay.setAdapter(jobAdapter);
 
-        List<Jobs> jobList = new ArrayList<>();
-
-        dataBase.collection("jobs").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if(task.isSuccessful()){
-                for(QueryDocumentSnapshot documentSnapshot : task.getResult()){
-                    Jobs job =documentSnapshot.toObject(Jobs.class);
-                    jobList.add(job);
-
-                    }
-                    jobsDisplay.setLayoutManager(new LinearLayoutManager(getContext()));
-                    jobAdapter = new jobListAdapter(jobList,getContext());
-                    jobsDisplay.setAdapter(jobAdapter);
-
-
-                }
-                else{
-                    Log.d("unsuccess", "job task failiure");
-                }
-
-            }
-        });
 
 
 

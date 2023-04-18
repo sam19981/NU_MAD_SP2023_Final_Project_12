@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.nu_mad_sp2023_final_project_12.models.Jobs;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -110,6 +111,7 @@ public class JobDescription extends Fragment {
         parentActivity = (MainActivity) getActivity();
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
+
     }
 
     @Override
@@ -152,6 +154,23 @@ public class JobDescription extends Fragment {
                 String chatRecordID = Utils.generateUniqueID(userIds);
 
                 DocumentReference collRef = db.collection("conversations").document(chatRecordID);
+                DocumentReference docref = db.collection("users").document(MainActivity.getCurrentBio().getEmail());
+                docref.update("takenJobs",FieldValue.arrayUnion(currJob.getJob_id())).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        Log.d("id", "added to takenjobs" + currJob.getJob_id());
+                        db.collection("jobs").document(currJob.getJob_id()).update("taken", MainActivity.getCurrentBio().getEmail())
+                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        Log.d("taken", "onComplete: added taken in job");
+                                    }
+                                });
+                    }
+                });
+
+
+
 
                 collRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
                                                 @Override

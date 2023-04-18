@@ -12,7 +12,28 @@ public class UserData implements Serializable {
 
     private List<String> postedJobs;
 
+
+
+    private List<String> takenJobs;
+
     private List<String> friendList;
+
+    public UserData(String name, String email, String profilepicture, List<String> postedJobs, List<String> takenJobs, List<String> friendList) {
+        this.name = name;
+        this.email = email;
+        this.profilepicture = profilepicture;
+        this.postedJobs = postedJobs;
+        this.takenJobs = takenJobs;
+        this.friendList = friendList;
+    }
+
+    public List<String> getTakenJobs() {
+        return takenJobs;
+    }
+
+    public void setTakenJobs(List<String> takenJobs) {
+        this.takenJobs = takenJobs;
+    }
 
     public List<String> getPostedJobs() {
         return postedJobs;
@@ -40,6 +61,8 @@ public class UserData implements Serializable {
         this.profilepicture = profilepicture;
         this.postedJobs = new ArrayList<>();
     }
+
+
 
     public UserData(String name, String email, String profilepicture, List<String> postedJobs) {
         this.name = name;

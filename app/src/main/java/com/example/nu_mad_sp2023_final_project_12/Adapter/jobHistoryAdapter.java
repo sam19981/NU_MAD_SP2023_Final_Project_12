@@ -23,6 +23,10 @@ public class jobHistoryAdapter extends RecyclerView.Adapter<jobHistoryAdapter.Vi
 
     private List<Jobs> jobs;
 
+    public void setJobs(List<Jobs> jobs) {
+        this.jobs = jobs;
+    }
+
     private Context context;
 
 

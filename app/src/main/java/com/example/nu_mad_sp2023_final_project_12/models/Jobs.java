@@ -1,6 +1,10 @@
 package com.example.nu_mad_sp2023_final_project_12.models;
+import com.google.firebase.firestore.DocumentId;
 
 public class Jobs {
+
+    @DocumentId
+    private String job_id;
     private String name;
     private String description;
     private String postedBy;
@@ -26,6 +30,11 @@ public class Jobs {
     public Jobs() {
 
     }
+
+    public String getJob_id() {
+        return job_id;
+    }
+
 
     public String getName() {
         return name;

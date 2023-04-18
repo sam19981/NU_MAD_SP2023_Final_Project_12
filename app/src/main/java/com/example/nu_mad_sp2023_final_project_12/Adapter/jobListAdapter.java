@@ -17,8 +17,15 @@ import com.example.nu_mad_sp2023_final_project_12.R;
 import com.example.nu_mad_sp2023_final_project_12.models.Jobs;
 
 import java.util.List;
+import java.util.Map;
 
 public class jobListAdapter extends RecyclerView.Adapter<jobListAdapter.ViewHolder> {
+
+    public void setJobs(List<Jobs> jobs) {
+        this.jobs = jobs;
+    }
+
+    private Map<String, Jobs> jobsMap;
 
     private List<Jobs> jobs;
 
