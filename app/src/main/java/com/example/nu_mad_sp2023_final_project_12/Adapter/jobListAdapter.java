@@ -20,6 +20,10 @@ import java.util.List;
 
 public class jobListAdapter extends RecyclerView.Adapter<jobListAdapter.ViewHolder> {
 
+    public void setJobs(List<Jobs> jobs) {
+        this.jobs = jobs;
+    }
+
     private List<Jobs> jobs;
 
     private Context context;

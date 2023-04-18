@@ -216,7 +216,7 @@ public class SignUpFragment extends Fragment implements DisplayTakenPhoto {
                                 taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                     @Override
                                     public void onSuccess(Uri uri) {
-                                        UserData newUser = new UserData(userName,email,uri.toString());
+                                        UserData newUser = new UserData(userName,email,uri.toString(),new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
                                         DocumentReference docRef = db.collection("users").document(newUser.getEmail());
                                         docRef.set(newUser).addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
