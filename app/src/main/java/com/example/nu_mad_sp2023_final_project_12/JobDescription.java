@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.nu_mad_sp2023_final_project_12.models.Jobs;
+import com.example.nu_mad_sp2023_final_project_12.models.UserData;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -159,7 +160,13 @@ public class JobDescription extends Fragment {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         Log.d("id", "added to takenjobs" + currJob.getJob_id());
-                        db.collection("jobs").document(currJob.getJob_id()).update("taken", MainActivity.getCurrentBio().getEmail())
+                        UserData updatecurrentuser = MainActivity.getCurrentBio();
+                        updatecurrentuser.getTakenJobs().add(currJob.getJob_id());
+                        Map<String, Object> updates = new HashMap<>();
+                        updates.put("taken", MainActivity.getCurrentBio().getEmail());
+                        updates.put("status", "ongoing : " + MainActivity.getCurrentBio().getName());
+
+                        db.collection("jobs").document(currJob.getJob_id()).update(updates)
                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {

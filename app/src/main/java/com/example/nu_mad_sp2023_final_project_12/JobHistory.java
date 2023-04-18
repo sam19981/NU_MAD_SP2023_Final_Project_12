@@ -3,6 +3,7 @@ package com.example.nu_mad_sp2023_final_project_12;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,7 +18,11 @@ import com.example.nu_mad_sp2023_final_project_12.Adapter.jobHistoryAdapter;
 import com.example.nu_mad_sp2023_final_project_12.models.Jobs;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -46,6 +51,8 @@ public class JobHistory extends Fragment {
     private RecyclerView jobHistory;
     private jobHistoryAdapter jobhistoryAdapter;
     List<Jobs> jobList = new ArrayList<>();
+
+    CollectionReference collectionReference;
 
     public JobHistory() {
         // Required empty public constructor
@@ -87,7 +94,7 @@ public class JobHistory extends Fragment {
                 }
                 else if(task.isSuccessful()){
                     for(QueryDocumentSnapshot documentSnapshot : task.getResult()){
-                        if(postedJobs.contains(documentSnapshot.getId())) {
+                        if(postedJobs.contains(documentSnapshot.getId()) || MainActivity.getCurrentBio().getTakenJobs().contains(documentSnapshot.getId())) {
                             Jobs job = documentSnapshot.toObject(Jobs.class);
                             jobList.add(job);
 
@@ -95,6 +102,7 @@ public class JobHistory extends Fragment {
                     }
                     jobhistoryAdapter.setJobs(jobList);
                     jobhistoryAdapter.notifyDataSetChanged();
+                    addeventlistener();
 
                 }
                 else{
@@ -103,6 +111,31 @@ public class JobHistory extends Fragment {
             }
         });
 
+    }
+
+    public void addeventlistener(){
+        collectionReference =  dataBase.collection("jobs");
+        collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                if(error!=null){
+                    Log.e("historyfragment", "onEvent: "+ error.getMessage());
+                }else{
+                    List<String> postedJobs = MainActivity.getCurrentBio().getPostedJobs();
+                    jobList.clear();
+                    for(DocumentSnapshot documentSnapshot: value.getDocuments()){
+                        Jobs job =documentSnapshot.toObject(Jobs.class);
+                        if(postedJobs.contains(documentSnapshot.getId()) || MainActivity.getCurrentBio().getTakenJobs().contains(documentSnapshot.getId())) {
+                            jobList.add(job);
+                        }
+                        jobhistoryAdapter.setJobs(jobList);
+                        jobhistoryAdapter.notifyDataSetChanged();
+
+                    }
+
+                }
+            }
+        });
     }
 
     @Override
