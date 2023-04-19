@@ -12,10 +12,10 @@
         android:id="@+id/otherChatContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="end"
         android:layout_margin="8dp"
+        android:layout_gravity="end"
         app:cardElevation="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
@@ -29,7 +29,8 @@
                 android:id="@+id/msgotherUserNameId"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end"
+                android:layout_gravity="start"
+                android:textDirection="rtl"
                 android:textColor="@color/black"
                 android:textSize="10sp"
                 android:textStyle="bold">
@@ -41,7 +42,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
-                android:layoutDirection="rtl"
+                android:layoutDirection="ltr"
                 android:textColor="@color/purple_500"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -50,10 +51,10 @@
                 android:id="@+id/sendImgId"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:visibility="invisible"
-                />
+                android:visibility="invisible" />
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

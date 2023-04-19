@@ -173,6 +173,8 @@ public class DisplayChatFragment extends Fragment implements DisplayTakenPhoto {
                         conversationBtwUsers.add(messageData);
                     }
                 }
+                conversationBtwUsers.sort(Comparator.comparing(MessageData::getTimestamp));
+
                 updateRecyclerView(conversationBtwUsers);
 
             }
