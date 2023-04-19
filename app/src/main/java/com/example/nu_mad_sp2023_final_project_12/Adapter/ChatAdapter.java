@@ -13,6 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 
 import com.bumptech.glide.Glide;
+import com.example.nu_mad_sp2023_final_project_12.DisplayChatFragment;
+import com.example.nu_mad_sp2023_final_project_12.MainActivity;
 import com.example.nu_mad_sp2023_final_project_12.R;
 import com.example.nu_mad_sp2023_final_project_12.models.UserData;
 
@@ -23,6 +25,8 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
    List<UserData> userList;
 
+   MainActivity parentActivity;
+
    Context context;
 
     public ChatAdapter() {
@@ -31,6 +35,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
     public ChatAdapter(List<UserData> userList, Context context) {
         this.userList = userList;
         this.context = context;
+        parentActivity = (MainActivity) this.context;
     }
 
     public void setUserList(List<UserData> userList) {
@@ -91,6 +96,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
             @Override
             public void onClick(View v) {
 
+                parentActivity.replaceFragment(new DisplayChatFragment(userHere),"usertochat");
             }
         });
 

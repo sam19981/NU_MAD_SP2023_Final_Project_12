@@ -73,8 +73,12 @@ public class JobDescription extends Fragment {
     private Button sndbtn;
     FirebaseFirestore db;
     FirebaseAuth mAuth;
+
+    private UserData otherUser;
     private static CollectionReference collRef;
     String  currentConversation="";
+
+
 
 
     public JobDescription() {
@@ -112,6 +116,8 @@ public class JobDescription extends Fragment {
         parentActivity = (MainActivity) getActivity();
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
+
+
 
     }
 
@@ -154,7 +160,7 @@ public class JobDescription extends Fragment {
 
                 String chatRecordID = Utils.generateUniqueID(userIds);
 
-                DocumentReference collRef = db.collection("conversations").document(chatRecordID);
+                CollectionReference collRef = db.collection("conversations");
                 DocumentReference docref = db.collection("users").document(MainActivity.getCurrentBio().getEmail());
                 docref.update("takenJobs",FieldValue.arrayUnion(currJob.getJob_id())).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
@@ -170,6 +176,56 @@ public class JobDescription extends Fragment {
                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
+                                        collRef.document(chatRecordID).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                                                                                               @Override
+                                                                                               public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+                                                                                                   CollectionReference documentReference = db.collection("conversations");
+                                                                                                   CollectionReference userReference = db.collection("users");
+                                                                                                   if (error != null) {
+                                                                                                       Log.d("Conversation", "Error");
+                                                                                                       return;
+
+                                                                                                   }
+                                                                                                   if (!value.exists()) {
+                                                                                                       Log.d("Conversation", "Value Empty");
+
+                                                                                                       documentReference.document(chatRecordID).set(new Conversation(userIds)).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                                                           @Override
+                                                                                                           public void onComplete(@NonNull Task<Void> task) {
+                                                                                                               Log.d("Conversation", "created Conversation");
+                                                                                                               currentConversation = chatRecordID;
+                                                                                                               userReference.document(MainActivity.getCurrentBio().getEmail()).update("friendList", FieldValue.arrayUnion(currJob.getPostedBy())).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                                                                   @Override
+                                                                                                                   public void onSuccess(Void unused) {
+                                                                                                                       userReference.document(currJob.getPostedBy()).update("friendList", FieldValue.arrayUnion(MainActivity.getCurrentBio().getEmail())).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                                                                           @Override
+                                                                                                                           public void onSuccess(Void unused) {
+                                                                                                                               Log.d("friend","added to friendList");
+
+                                                                                                                               db.collection("users").document(currJob.getPostedBy()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                                                                                                   @Override
+                                                                                                                                   public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                                                                                                       if(task.isSuccessful()){
+                                                                                                                                           otherUser = task.getResult().toObject(UserData.class);
+                                                                                                                                           parentActivity.replaceFragment(new DisplayChatFragment(otherUser),"desctochat");
+                                                                                                                                       }
+                                                                                                                                   }
+                                                                                                                               });
+                                                                                                                           }
+                                                                                                                       });
+
+                                                                                                                   }
+                                                                                                               });
+                                                                                                           }
+                                                                                                       });
+                                                                                                   } else {
+                                                                                                       Log.d("Conversation", "onEvent: Convo exists");
+                                                                                                       currentConversation = chatRecordID;
+
+                                                                                                   }
+                                                                                               }
+                                                                                           }
+                                        );
                                         Log.d("taken", "onComplete: added taken in job");
                                     }
                                 });
@@ -179,46 +235,7 @@ public class JobDescription extends Fragment {
 
 
 
-                collRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
-                                                @Override
-                                                public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
-                                                    CollectionReference documentReference = db.collection("conversations");
-                                                    CollectionReference userReference = db.collection("users");
-                                                    if (error != null) {
-                                                        Log.d("Conversation", "Error");
-                                                        return;
 
-                                                    }
-                                                    if (!value.exists()) {
-                                                        Log.d("Conversation", "Value Empty");
-
-                                                        documentReference.document(chatRecordID).set(new Conversation(userIds)).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                            @Override
-                                                            public void onComplete(@NonNull Task<Void> task) {
-                                                                Log.d("Conversation", "created Conversation");
-                                                                currentConversation = chatRecordID;
-                                                                userReference.document(MainActivity.getCurrentBio().getEmail()).update("friendList", FieldValue.arrayUnion(currJob.getPostedBy())).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                                    @Override
-                                                                    public void onSuccess(Void unused) {
-                                                                        userReference.document(currJob.getPostedBy()).update("friendList", FieldValue.arrayUnion(MainActivity.getCurrentBio().getEmail())).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                                            @Override
-                                                                            public void onSuccess(Void unused) {
-                                                                                Log.d("friend","added to friendList");
-                                                                            }
-                                                                        });
-
-                                                                    }
-                                                                });
-                                                            }
-                                                        });
-                                                    } else {
-                                                        Log.d("Conversation", "onEvent: Convo exists");
-                                                            currentConversation = chatRecordID;
-
-                                                    }
-                                                }
-                                            }
-                );
             }
         });
         return view;

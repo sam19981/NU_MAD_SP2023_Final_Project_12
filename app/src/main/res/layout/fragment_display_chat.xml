@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".InClass08.DisplayChatFragment">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/displayChatId"
+        android:layout_width="409dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="1dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="1dp"
+        android:layout_marginBottom="55dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toImg" />
+
+    <ImageView
+        android:id="@+id/toImg"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="45dp"
+        android:layout_marginTop="8dp"
+        android:src="@drawable/select_avatar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/touserName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:text="TextView"
+        app:layout_constraintStart_toEndOf="@+id/toImg"
+        app:layout_constraintTop_toTopOf="@+id/toImg" />
+
+    <Button
+        android:id="@+id/sendBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="7dp"
+        android:layout_weight="1"
+        android:text="@string/send_value"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/displayChatId" />
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/sendMsgId"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="message"
+        android:inputType="text"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/sendBtn"
+        app:layout_constraintStart_toEndOf="@+id/sendImage"
+        app:layout_constraintTop_toBottomOf="@+id/displayChatId" />
+
+    <ImageButton
+        android:id="@+id/backButtonId"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_marginEnd="16dp"
+        android:src="?attr/actionModeCloseDrawable"
+        app:layout_constraintEnd_toStartOf="@+id/toImg"
+        app:layout_constraintTop_toTopOf="@+id/toImg" />
+
+    <ImageView
+        android:id="@+id/sendImage"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:src="@drawable/camera"
+        app:layout_constraintBottom_toBottomOf="@+id/sendMsgId"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/displayChatId" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

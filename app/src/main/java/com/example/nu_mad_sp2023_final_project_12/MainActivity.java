@@ -6,9 +6,11 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.example.nu_mad_sp2023_final_project_12.interfaces.SendImage;
 import com.example.nu_mad_sp2023_final_project_12.models.UserData;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -18,7 +20,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SendImage {
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
     private FirebaseUser currentUser;
@@ -85,11 +87,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void popBackstack(String tag) {
-        if (!tag.equals("")) {
+        if (  !tag.equals("") ) {
                 fragmentManager.popBackStack(tag,FragmentManager.POP_BACK_STACK_INCLUSIVE);
         } else {
             fragmentManager.popBackStack();
         }
     }
 
+    @Override
+    public void send(Uri URI, String toUser, String toUserEmail, String currentConvo) {
+
+    }
 }
