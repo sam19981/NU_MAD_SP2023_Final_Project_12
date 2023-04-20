@@ -86,10 +86,13 @@ public class jobListAdapter extends RecyclerView.Adapter<jobListAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull jobListAdapter.ViewHolder holder, int position) {
         Jobs currJob = jobs.get(position);
-        Glide.with(context)
-                        .load(R.drawable.dog)
-                                .into(holder.getJ_img());
-        holder.getJ_pay().setText(String.valueOf(jobs.get(position).getWage()));
+        if(holder.getJ_img() != null){
+            Glide.with(context)
+                    .load(currJob.getImgUrl())
+                    .into(holder.getJ_img());
+        }
+
+        holder.getJ_pay().setText("$ " + String.valueOf(jobs.get(position).getWage()));
         holder.getJ_title().setText(jobs.get(position).getName());
         holder.getJ_loc().setText(jobs.get(position).getLocation());
         holder.currentJob.setOnClickListener(new View.OnClickListener() {

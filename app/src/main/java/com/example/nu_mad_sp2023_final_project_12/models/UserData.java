@@ -8,11 +8,12 @@ public class UserData implements Serializable {
 
     private String name;
     private String email;
+
+    private String phoneNum;
+
     private String profilepicture;
 
     private List<String> postedJobs;
-
-
 
     private List<String> takenJobs;
 
@@ -49,6 +50,14 @@ public class UserData implements Serializable {
 
     public void setFriendList(List<String> friendList) {
         this.friendList = friendList;
+    }
+
+    public String getPhoneNum() {
+        return phoneNum;
+    }
+
+    public void setPhoneNum(String phoneNum) {
+        this.phoneNum = phoneNum;
     }
 
     public UserData() {

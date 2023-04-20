@@ -12,10 +12,16 @@ public class Jobs {
     private String imgUrl;
     private String status;
     private String location;
+
+
+
+
+    private String x;
+    private String y;
     private double wage;
     private String time;
 
-    public Jobs(String name, String description, String postedBy, String taken, String imgUrl, String status, String location, double wage, String time) {
+    public Jobs(String name, String description, String postedBy, String taken, String imgUrl, String status, String location, double wage, String time, String x, String y) {
         this.name = name;
         this.description = description;
         this.postedBy = postedBy;
@@ -25,10 +31,29 @@ public class Jobs {
         this.location = location;
         this.wage = wage;
         this.time = time;
+        this.x = x;
+        this.y = y;
     }
 
     public Jobs() {
 
+    }
+
+
+    public String getX() {
+        return x;
+    }
+
+    public String getY() {
+        return y;
+    }
+
+    public void setX(String x) {
+        this.x = x;
+    }
+
+    public void setY(String y) {
+        this.y = y;
     }
 
     public String getJob_id() {

@@ -3,6 +3,7 @@ package com.example.nu_mad_sp2023_final_project_12;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -26,7 +27,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -59,6 +62,7 @@ public class ChatFragment extends Fragment {
     private ChatAdapter chatAdapter;
     private RecyclerView.LayoutManager recyclerViewLayoutManager;
     List<UserData> users;
+    List<UserData> allUsers;
 
     Button logOut;
     UserData currentUser;
@@ -95,7 +99,9 @@ public class ChatFragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         mUser = mAuth.getCurrentUser();
+        allUsers = new ArrayList<>();
         loadData();
+        eventListner();
 
     }
 
@@ -105,41 +111,101 @@ public class ChatFragment extends Fragment {
     }
 
     private void loadData() {
-        List<UserData> allUsers = new ArrayList<>();
         CollectionReference collRef = db.collection("users");
-        collRef.get()
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d("UserList", "Could Not load User list ");
-                    }
-                })
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            List<String> friends = MainActivity.getCurrentBio().getFriendList();
-                            if(task.getResult().size()>1 && friends.size()>=1) {
-                                for (QueryDocumentSnapshot document : task.getResult()) {
-                                    Log.d("UserList", document.getId() + " => " + document.getData());
-                                    UserData user = document.toObject(UserData.class);
-                                    if(friends.contains(user.getEmail()))
-                                    {
-                                        allUsers.add(user);
+
+        collRef.document(MainActivity.getCurrentBio().getEmail()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+
+                if(task.isSuccessful())
+                {   DocumentSnapshot documentSnapshot = task.getResult();
+                    UserData  User = documentSnapshot.toObject(UserData.class);
+                    MainActivity.setCurrentBio(User);
+                    collRef.get()
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.d("UserList", "Could Not load User list ");
+                                }
+                            })
+                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        allUsers.clear();
+                                        List<String> friends = MainActivity.getCurrentBio().getFriendList();
+                                        if(task.getResult().size()>1 && friends.size()>=1) {
+                                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                                Log.d("UserList", document.getId() + " => " + document.getData());
+                                                UserData user = document.toObject(UserData.class);
+                                                if(friends.contains(user.getEmail()))
+                                                {
+                                                    allUsers.add(user);
+                                                }
+                                            }
+                                            updateRecyclerView(allUsers);
+                                        }
+                                        else{
+                                            Log.d("UserList", "No user to Chat with please pick a job.", task.getException());
+                                        }
+                                    } else {
+                                        Log.w("UserList", "Error getting documents.", task.getException());
                                     }
                                 }
-                                updateRecyclerView(allUsers);
-                            }
-                            else{
-                                Log.d("UserList", "No user to Chat with please pick a job.", task.getException());
-                            }
-                        } else {
-                            Log.w("UserList", "Error getting documents.", task.getException());
-                        }
-                    }
-                });
+                            });
+                }
+            }
+        });
+
+
     }
 
+
+
+ private void eventListner()
+ {
+     CollectionReference collRef = db.collection("users");
+     db.collection("users").document(MainActivity.getCurrentBio().getEmail()).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+         @Override
+         public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+             UserData  User = value.toObject(UserData.class);
+             MainActivity.setCurrentBio(User);
+             collRef.get()
+                     .addOnFailureListener(new OnFailureListener() {
+                         @Override
+                         public void onFailure(@NonNull Exception e) {
+                             Log.d("UserList", "Could Not load User list ");
+                         }
+                     })
+                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                         @Override
+                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                             if (task.isSuccessful()) {
+                                 List<String> friends = MainActivity.getCurrentBio().getFriendList();
+                                 allUsers.clear();
+                                 if(task.getResult().size()>1 && friends.size()>=1) {
+                                     for (QueryDocumentSnapshot document : task.getResult()) {
+                                         Log.d("UserList", document.getId() + " => " + document.getData());
+                                         UserData user = document.toObject(UserData.class);
+                                         if(friends.contains(user.getEmail()))
+                                         {
+                                             allUsers.add(user);
+                                         }
+                                     }
+                                     updateRecyclerView(allUsers);
+                                 }
+                                 else{
+                                     Log.d("UserList", "No user to Chat with please pick a job.", task.getException());
+                                 }
+                             } else {
+                                 Log.w("UserList", "Error getting documents.", task.getException());
+                             }
+                         }
+                     });
+
+         }
+     });
+ }
 
 
 

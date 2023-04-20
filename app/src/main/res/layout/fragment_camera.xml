@@ -31,12 +31,12 @@
         android:clickable="true"
         android:contentDescription="@string/flip_camera"
         android:focusable="true"
+        android:src="@android:drawable/ic_menu_revert"
         app:backgroundTint="#BFFFFFFF"
         app:fabCustomSize="48dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:maxImageSize="48dp"
-         />
+        app:maxImageSize="48dp" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/buttonOpenGallery"
@@ -47,13 +47,13 @@
         android:clickable="true"
         android:contentDescription="@string/open_gallery"
         android:focusable="true"
+        android:src="@android:drawable/ic_menu_gallery"
         android:visibility="visible"
         app:backgroundTint="#BFFFFFFF"
         app:fabCustomSize="48dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:maxImageSize="48dp"
-        />
+        app:maxImageSize="48dp" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/buttonTakePhoto"

@@ -94,11 +94,11 @@ public class jobHistoryAdapter extends RecyclerView.Adapter<jobHistoryAdapter.Vi
 
         Jobs currJob = jobs.get(position);
         Glide.with(context)
-                .load(R.drawable.dog)
+                .load(currJob.getImgUrl())
                 .into(holder.getJ_img());
         holder.getJ_title().setText(jobs.get(position).getName());
         holder.getJ_status().setText(jobs.get(position).getStatus());
-        if(currJob.getPostedBy().equals(MainActivity.getCurrentBio().getEmail())){
+        if(currJob.getPostedBy().equals(MainActivity.getCurrentBio().getEmail()) && !currJob.getStatus().contains("completed")){
             holder.getCompleted().setVisibility(View.VISIBLE);
             holder.getCompleted().setOnClickListener(new View.OnClickListener() {
                 @Override

@@ -20,7 +20,7 @@
         <ImageView
             android:id="@+id/h_img"
             android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:scaleType="centerInside"
             android:src="@drawable/awesome"
@@ -30,8 +30,8 @@
 
 
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_width="285dp"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="16dp">
 
@@ -39,6 +39,8 @@
                 android:id="@+id/h_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="2"
                 android:text="walking a dog in the park"
                 android:textColor="@color/black"
                 android:textSize="18sp"
@@ -55,6 +57,8 @@
                 android:id="@+id/h_status"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="2"
                 android:text="roxbury, MA"
                 android:textColor="@color/purple_500"
                 android:textSize="14sp" />

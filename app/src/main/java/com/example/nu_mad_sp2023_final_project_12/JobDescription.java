@@ -1,5 +1,6 @@
 package com.example.nu_mad_sp2023_final_project_12;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -64,6 +65,7 @@ public class JobDescription extends Fragment {
     private Jobs currJob;
 
     private TextView job_title;
+    private Button getLocBtn;
     private ImageView job_img;
     private TextView job_desc;
     private TextView job_pay;
@@ -131,6 +133,8 @@ public class JobDescription extends Fragment {
         job_desc = view.findViewById(R.id.jdesc);
         job_time = view.findViewById(R.id.jd_time);
         job_pay = view.findViewById(R.id.jd_wage);
+        getLocBtn = view.findViewById(R.id.getloc);
+
 
         backbutton = view.findViewById(R.id.backbtn);
         sndbtn = view.findViewById(R.id.sendbtnId);
@@ -150,6 +154,20 @@ public class JobDescription extends Fragment {
                 //parentActivity.popBackstack("");
             }
         });
+
+        getLocBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String geoUriString = "google.navigation:q=" + currJob.getX() + "" + currJob.getY();
+                Uri geoUri = Uri.parse(geoUriString);
+                Intent mapIntent = new Intent(Intent.ACTION_VIEW, geoUri);
+                mapIntent.setPackage("com.google.android.apps.maps");
+                startActivity(mapIntent);
+            }
+        });
+
+
+
         sndbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -166,8 +184,7 @@ public class JobDescription extends Fragment {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         Log.d("id", "added to takenjobs" + currJob.getJob_id());
-                        UserData updatecurrentuser = MainActivity.getCurrentBio();
-                        updatecurrentuser.getTakenJobs().add(currJob.getJob_id());
+                        MainActivity.getCurrentBio().getTakenJobs().add(currJob.getJob_id());
                         Map<String, Object> updates = new HashMap<>();
                         updates.put("taken", MainActivity.getCurrentBio().getEmail());
                         updates.put("status", "ongoing : " + MainActivity.getCurrentBio().getName());
@@ -197,6 +214,7 @@ public class JobDescription extends Fragment {
                                                                                                                userReference.document(MainActivity.getCurrentBio().getEmail()).update("friendList", FieldValue.arrayUnion(currJob.getPostedBy())).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                                                                                    @Override
                                                                                                                    public void onSuccess(Void unused) {
+                                                                                                                       MainActivity.getCurrentBio().getFriendList().add(currJob.getPostedBy());
                                                                                                                        userReference.document(currJob.getPostedBy()).update("friendList", FieldValue.arrayUnion(MainActivity.getCurrentBio().getEmail())).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                                                                                            @Override
                                                                                                                            public void onSuccess(Void unused) {
@@ -220,7 +238,18 @@ public class JobDescription extends Fragment {
                                                                                                        });
                                                                                                    } else {
                                                                                                        Log.d("Conversation", "onEvent: Convo exists");
-                                                                                                       currentConversation = chatRecordID;
+                                                                                                       db.collection("users").document(currJob.getPostedBy()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                                                                           @Override
+                                                                                                           public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                                                                               if(task.isSuccessful()){
+                                                                                                                   otherUser = task.getResult().toObject(UserData.class);
+                                                                                                                   parentActivity.replaceFragment(new DisplayChatFragment(otherUser),"desctochat");
+                                                                                                               }
+                                                                                                           }
+                                                                                                       });
+                                                                                                       //currentConversation = chatRecordID;
+
+
 
                                                                                                    }
                                                                                                }

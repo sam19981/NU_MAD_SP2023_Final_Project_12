@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -20,6 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
+import com.bumptech.glide.Glide;
 import com.example.nu_mad_sp2023_final_project_12.Adapter.DisplayChatAdapter;
 import com.example.nu_mad_sp2023_final_project_12.interfaces.DisplayTakenPhoto;
 import com.example.nu_mad_sp2023_final_project_12.interfaces.SendImage;
@@ -155,12 +157,14 @@ public class DisplayChatFragment extends Fragment implements DisplayTakenPhoto {
         List<String> userIds = Arrays.asList(otherUser.getEmail(),currentUser.getEmail());
         parentActivity = (MainActivity) getActivity();
 
+
         collRef =  db.collection("conversations");
 
         Collections.sort(userIds);
 
         CollectionReference collRef = db.collection("conversations");
         currentConversation = Utils.generateUniqueID(userIds);
+
 
         collRef.document(currentConversation).collection("allmessages").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
@@ -176,6 +180,7 @@ public class DisplayChatFragment extends Fragment implements DisplayTakenPhoto {
                 conversationBtwUsers.sort(Comparator.comparing(MessageData::getTimestamp));
 
                 updateRecyclerView(conversationBtwUsers);
+                addEventListner();
 
             }
         });
@@ -186,12 +191,14 @@ public class DisplayChatFragment extends Fragment implements DisplayTakenPhoto {
         collRef.document(currentConversation).collection("allmessages").addSnapshotListener(new EventListener<QuerySnapshot>() {
                 @Override
                 public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                    conversationBtwUsers.clear();
                     for (DocumentSnapshot snapshot : value.getDocuments()) {
                         conversationBtwUsers.add(snapshot.toObject(MessageData.class));
                         Log.d("chatMessages", "onComplete: " + snapshot.getId() + "-" + snapshot.getData());
                     }
                     conversationBtwUsers.sort(Comparator.comparing(MessageData::getTimestamp));
-                    loadData();
+                    updateRecyclerView(conversationBtwUsers);
+
                 }
             });
     }
@@ -240,15 +247,17 @@ public class DisplayChatFragment extends Fragment implements DisplayTakenPhoto {
        toUser.setText(otherUser.getName());
        sendBtn = view.findViewById(R.id.sendBtn);
        sendMessage = view.findViewById(R.id.sendMsgId);
-       sendImage = view.findViewById(R.id.sendImage);
 
+        Glide.with(getContext())
+                .load(otherUser.getProfilepicture())
+                .into(toImg);
 
-       sendImage.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View v) {
-               getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.rootLayoutId,new CameraFragment(DisplayChatFragment.this)).commit();
-           }
-       });
+        parentActivity.getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                parentActivity.replaceFragment(new HomeFragment(),"");
+            }
+        });
 
         sendBtn.setOnClickListener(new View.OnClickListener() {
            @Override

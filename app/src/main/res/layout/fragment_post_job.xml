@@ -50,7 +50,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="40dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="20dp"
         android:text="Job Name"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView8" />
@@ -88,7 +88,7 @@
         android:id="@+id/post_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="60dp"
+        android:layout_marginBottom="50dp"
         android:text="Post"
         android:textAllCaps="false"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -129,12 +129,33 @@
         app:layout_constraintTop_toBottomOf="@+id/jd_wage" />
 
     <ImageView
-        android:id="@+id/imageView7"
-        android:layout_width="75dp"
-        android:layout_height="66dp"
+        android:id="@+id/post_back"
+        android:layout_width="59dp"
+        android:layout_height="52dp"
         android:layout_marginStart="7dp"
         android:layout_marginTop="7dp"
         android:src="@drawable/previous"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/loctext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="Job Location"
+        app:layout_constraintStart_toStartOf="@+id/j_img"
+        app:layout_constraintTop_toBottomOf="@+id/j_img"
+        tools:text="Job Location " />
+
+    <Button
+        android:id="@+id/locatebtn"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_marginStart="20dp"
+        android:text="locate"
+        android:textAllCaps="false"
+        app:layout_constraintBottom_toBottomOf="@+id/loctext"
+        app:layout_constraintStart_toEndOf="@+id/loctext"
+        app:layout_constraintTop_toTopOf="@+id/loctext" />
 </androidx.constraintlayout.widget.ConstraintLayout>

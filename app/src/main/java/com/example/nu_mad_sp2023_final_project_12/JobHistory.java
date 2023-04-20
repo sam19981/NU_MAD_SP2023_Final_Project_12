@@ -89,7 +89,8 @@ public class JobHistory extends Fragment {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 List<String> postedJobs = MainActivity.getCurrentBio().getPostedJobs();
-                if(postedJobs == null || postedJobs.size() == 0) {
+                List<String> takenJobs = MainActivity.getCurrentBio().getTakenJobs();
+                if(postedJobs.size() == 0 && takenJobs.size() == 0) {
                     Toast.makeText(getContext(), "no job history to show", Toast.LENGTH_SHORT).show();
                 }
                 else if(task.isSuccessful()){
@@ -122,10 +123,12 @@ public class JobHistory extends Fragment {
                     Log.e("historyfragment", "onEvent: "+ error.getMessage());
                 }else{
                     List<String> postedJobs = MainActivity.getCurrentBio().getPostedJobs();
+                    List<String> takenJobs = MainActivity.getCurrentBio().getTakenJobs();
                     jobList.clear();
+
                     for(DocumentSnapshot documentSnapshot: value.getDocuments()){
                         Jobs job =documentSnapshot.toObject(Jobs.class);
-                        if(postedJobs.contains(documentSnapshot.getId()) || MainActivity.getCurrentBio().getTakenJobs().contains(documentSnapshot.getId())) {
+                        if(postedJobs.contains(documentSnapshot.getId()) || takenJobs.contains(documentSnapshot.getId())) {
                             jobList.add(job);
                         }
                         jobhistoryAdapter.setJobs(jobList);

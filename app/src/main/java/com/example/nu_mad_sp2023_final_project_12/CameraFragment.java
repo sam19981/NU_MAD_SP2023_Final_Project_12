@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
@@ -98,6 +99,8 @@ public class CameraFragment extends Fragment implements View.OnClickListener{
         lenseFacingFront = CameraSelector.LENS_FACING_FRONT;
     }
 
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -117,6 +120,13 @@ public class CameraFragment extends Fragment implements View.OnClickListener{
         lenseFacing = lenseFacingBack;
 
         setUpCamera(lenseFacing);
+
+        getActivity().getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                getActivity().getSupportFragmentManager().popBackStack();
+            }
+        });
 
         return rview;
 

@@ -1,10 +1,12 @@
 package com.example.nu_mad_sp2023_final_project_12;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -97,6 +99,7 @@ public class HomeFragment extends Fragment implements DisplayTakenPhoto {
         return fragment;
     }
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -129,6 +132,13 @@ public class HomeFragment extends Fragment implements DisplayTakenPhoto {
         Boolean writeAllowed = ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
 
 
+        parentActivity.getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+            }
+        });
+
+
         changeProfilePic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -144,6 +154,7 @@ public class HomeFragment extends Fragment implements DisplayTakenPhoto {
                             android.Manifest.permission.READ_EXTERNAL_STORAGE,
                             Manifest.permission.WRITE_EXTERNAL_STORAGE
                     }, PERMISSIONS_CODE);
+                    parentActivity.replaceFragment(new CameraFragment(HomeFragment.this),"profilepicChange");
                 }
             }
         });
@@ -164,7 +175,7 @@ public class HomeFragment extends Fragment implements DisplayTakenPhoto {
         fragments.add(new ChatFragment());
 
         viewPager = (ViewPager2) view.findViewById(R.id.viewPager);
-        viewPagerAdapter = new ViewPagerAdapter(parentActivity.getSupportFragmentManager(),getLifecycle(), fragments);
+        viewPagerAdapter = new ViewPagerAdapter(getChildFragmentManager(),getLifecycle(), fragments);
         viewPager.setAdapter(viewPagerAdapter);
         tabLayout = (TabLayout) view.findViewById(R.id.sliding_tabs);
         new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
