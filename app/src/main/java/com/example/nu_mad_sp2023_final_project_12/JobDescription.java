@@ -158,7 +158,7 @@ public class JobDescription extends Fragment {
         getLocBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String geoUriString = "google.navigation:q=" + currJob.getX() + "" + currJob.getY();
+                String geoUriString = "google.navigation:q=" + currJob.getX() + " " + currJob.getY();
                 Uri geoUri = Uri.parse(geoUriString);
                 Intent mapIntent = new Intent(Intent.ACTION_VIEW, geoUri);
                 mapIntent.setPackage("com.google.android.apps.maps");
