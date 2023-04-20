@@ -84,6 +84,7 @@ public class MainActivity extends AppCompatActivity implements SendImage {
         fragmentTransaction.replace(R.id.rootLayoutId, fragment);
         fragmentTransaction.addToBackStack(tag);
         fragmentTransaction.commit();
+
     }
 
     public void popBackstack(String tag) {

@@ -61,6 +61,7 @@ public class SignUpFragment extends Fragment implements DisplayTakenPhoto {
     private ImageView profilePic;
     private TextInputEditText etRegEmail;
     private TextInputEditText etRegPassword;
+    private TextInputEditText phoneNum;
     private TextInputEditText euserName;
     private TextView tvLoginHere;
     private Button btnRegister;
@@ -71,6 +72,10 @@ public class SignUpFragment extends Fragment implements DisplayTakenPhoto {
     private StorageReference storageReference ;
 
     private FirebaseStorage storage;
+
+
+
+
 
 
     // TODO: Rename and change types of parameters
@@ -122,6 +127,10 @@ public class SignUpFragment extends Fragment implements DisplayTakenPhoto {
         tvLoginHere = view.findViewById(R.id.tvLoginHere);
         btnRegister = view.findViewById(R.id.btnRegister);
         euserName = view.findViewById(R.id.eUserName);
+        phoneNum = view.findViewById(R.id.PhoneNum);
+
+
+
 
         if(URI!= null)
         {
@@ -186,8 +195,14 @@ public class SignUpFragment extends Fragment implements DisplayTakenPhoto {
         String email = etRegEmail.getText().toString();
         String password = etRegPassword.getText().toString();
         String userName = euserName.getText().toString();
+        String mobileNum = phoneNum.getText().toString();
 
-        if (TextUtils.isEmpty(email)){
+        if(TextUtils.isEmpty(mobileNum) || mobileNum.length() != 10){
+            phoneNum.setError("invalid phone number");
+            phoneNum.requestFocus();
+        }
+
+        else if (TextUtils.isEmpty(email)){
             etRegEmail.setError("Email cannot be empty");
             etRegEmail.requestFocus();
         }else if (TextUtils.isEmpty(password)){
@@ -217,6 +232,7 @@ public class SignUpFragment extends Fragment implements DisplayTakenPhoto {
                                     @Override
                                     public void onSuccess(Uri uri) {
                                         UserData newUser = new UserData(userName,email,uri.toString(),new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+                                        newUser.setPhoneNum(mobileNum);
                                         DocumentReference docRef = db.collection("users").document(newUser.getEmail());
                                         docRef.set(newUser).addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
@@ -256,7 +272,7 @@ public class SignUpFragment extends Fragment implements DisplayTakenPhoto {
 
             @Override
             public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                parentActivity.getSupportFragmentManager().popBackStackImmediate();
+               parentActivity.popBackstack("");
 //                parentActivity.replaceFragment(SignUpFragment.newInstance(URI),"signUpWithpic");
                 return false;
             }
